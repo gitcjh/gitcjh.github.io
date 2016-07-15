@@ -204,7 +204,97 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <color></color>
+        <p><color></color></p>
+<h1 id="一、目录与路径"><a href="#一、目录与路径" class="headerlink" title="一、目录与路径"></a>一、目录与路径</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">.           代表此目录</div><div class="line">..          代表上层目录</div><div class="line">-           代表前一个工作目录</div><div class="line">~           代表当前用户的主文件夹</div><div class="line">~accout     代表用户account的主文件夹</div></pre></td></tr></table></figure>
+<p>与目录处理相关的命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">cd:     切换目录</div><div class="line">pwd:    显示当前目录</div><div class="line">mkdir:  新建目录</div><div class="line">rmdir:  删除空目录</div></pre></td></tr></table></figure></p>
+<ol>
+<li><code>cd</code>命令<blockquote>
+<p><code>cd [绝对路径 or 相对路径]</code></p>
+</blockquote>
+</li>
+<li><code>pwd</code>命令<blockquote>
+<p><code>pwd [-P]</code><br>参数：-P 显示出当前路径，而非使用连接(link)路径  </p>
+</blockquote>
+</li>
+</ol>
+<p>例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[junhan@localhost test_dir]$ cd /var/mail</div><div class="line">[junhan@localhost mail]$ pwd</div><div class="line">/var/mail</div><div class="line">[junhan@localhost mail]$ pwd -P</div><div class="line">/var/spool/mail</div><div class="line">[junhan@localhost mail]$ ls -ld /var/mail</div><div class="line">lrwxrwxrwx. 1 root root 10 7月   7 18:39 /var/mail -&gt; spool/mail</div></pre></td></tr></table></figure></p>
+<ol>
+<li><code>mkdir</code>命令  <blockquote>
+<p><code>mkdir [-mp] 目录名称</code><br>-m: 直接配置权限（默认使用umask）<br>-p: 递归创建  </p>
+</blockquote>
+</li>
+</ol>
+<p>示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[junhan@localhost test_dir]$ mkdir t1/t2/t3/t4</div><div class="line">mkdir: 无法创建目录&quot;t1/t2/t3/t4&quot;: 没有那个文件或目录</div><div class="line">[junhan@localhost test_dir]$ mkdir -p t1/t2/t3/t4</div><div class="line">[junhan@localhost test_dir]$ mkdir -m 711 test2</div><div class="line">[junhan@localhost test_dir]$ ls -ld test2</div><div class="line">drwx--x--x. 2 junhan junhan 6 7月  15 01:52 test2</div></pre></td></tr></table></figure></p>
+<ol>
+<li><code>rmdir</code>命令<blockquote>
+<p><code>rmdir [-p] 目录名称</code><br>-P: 连同上层空目录一起删除</p>
+</blockquote>
+</li>
+</ol>
+<h1 id="二、文件目录管理"><a href="#二、文件目录管理" class="headerlink" title="二、文件目录管理"></a>二、文件目录管理</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ls: 查看文件与目录</div><div class="line">cp: 复制</div><div class="line">rm: 删除</div><div class="line">mv: 移动</div><div class="line">basename/dirname: 文件名/目录名</div></pre></td></tr></table></figure>
+<ol>
+<li><p><code>ls</code>命令</p>
+<blockquote>
+<p><code>ls [-aAdfFhilnrRSt] 目录名称</code><br><strong>参数：</strong><br>-a : 全部文件，包括.和..（常用来显示所有文件）<br>-A : 全部文件，不包括.和..<br>-d : 只列出目录本身（常用来显示目录本身信息）<br>-F : 给予附加数据结构，如：<code>*：</code>代表可执行文件；<code>/:</code>表示目录；<code>=：</code>表示socket文件；<code>|：</code>表示管道文件.<br>-i : 列出i-node<br>-l : 列出长数据串，包含文件属性和权限等信息（常用于查看权限）<br>-R : 连同子目录一同显示<br><code>ls [--color={never,auto,always}] 目录名称</code><br>–color={never,auto,always} : 设置显示颜色<br><code>ls [--full-time] 目录名称</code><br>–full-time : 显示完整时间<br>–time={atime,ctime} : 显示访问时间(atime)，权限改变时间(ctime)  </p>
+</blockquote>
+</li>
+<li><p><code>cp</code>命令</p>
+<blockquote>
+<p><code>cp [-adfilprus] source destination</code><br><code>cp option source1 source2 source3 ... directory</code><br><strong>参数</strong><br>-a : 相当于-pdr<br>-d : 如果是连接文件，则复制连接文件（默认复制的是源文件）<br>-f : 即force，强制复制<br>-i : 若已经存在，则询问（常用）<br>-l : 用来硬连接的连接文件创建<br>-P : 连同属性一同复制（默认复制不会复制属性，此命令常用于备份文件）<br>-r : 递归复制（常用于复制整个目录）<br>-s : 复制成符号链接文件(symbolice link)<br>-u : 即update，源文件相对较旧才更新  </p>
+</blockquote>
+</li>
+<li><code>rm</code>命令<blockquote>
+<p><code>rm [-fir]</code><br><strong>参数：</strong><br>-f : 即force<br>-i : 询问<br>-r : 递归删除</p>
+</blockquote>
+</li>
+<li><code>mv</code>命令<blockquote>
+<p><code>mv [-fiu] source destination</code><br><code>mv [options] source1 source2 ... directory</code><br><strong>参数:</strong><br>-f : force<br>-i : 询问<br>-u : 比较旧才更新  </p>
+</blockquote>
+</li>
+<li><code>basename/dirname</code>命令<br>示例：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[junhan@localhost junhan]$ dirname test_dir/</div><div class="line">file   t1/    test2/ </div><div class="line">[junhan@localhost junhan]$ dirname test_dir/file </div><div class="line">test_dir</div><div class="line">[junhan@localhost junhan]$ basename test_dir/file </div><div class="line">file</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="三、文件内容查阅"><a href="#三、文件内容查阅" class="headerlink" title="三、文件内容查阅"></a>三、文件内容查阅</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">cat : 第一行开始显示</div><div class="line">tac : 最后一行开始显示</div><div class="line">nl : 显示行号</div><div class="line">more : 一页页显示</div><div class="line">less : 一页页显示，课往前翻页</div><div class="line">head : 看头几行</div><div class="line">tail : 看末几行</div><div class="line">od : 指定进制查看</div></pre></td></tr></table></figure>
+<ol>
+<li><code>cat</code>命令(concatenate)  <blockquote>
+<p><code>cat [-AbEnTv]</code><br>-A : 等价于-vET，显示特殊字符<br>-b : 显示行号，不包括空白行<br>-n : 显示行号，包括空白行  </p>
+</blockquote>
+</li>
+<li><code>nl</code>命令  <blockquote>
+<p><code>nl [-bnw] 文件</code><br>-b a : 同cat -n<br>-b t : 同cat -b (默认值)  </p>
+</blockquote>
+</li>
+<li><code>more</code>和<code>less</code>  <blockquote>
+<p><strong>more:</strong><br>空格：向下翻页<br>回车：向下一行<br>/seq：向下搜索seq<br>:f：显示文件名和当前行号<br>q ：退出<br><strong>less:</strong><br>[PgDn]：向下翻页<br>[PgUp]：向上翻页<br>/seq：向下查<br>?seq：向上查<br>n ：重复查  </p>
+</blockquote>
+</li>
+<li><code>head</code>和<code>tail 文件</code>  <blockquote>
+<p>head/tail [-n number]:number+表示前number行，number-表示除后number行。<br>tail -f 文件:  动态监测  </p>
+</blockquote>
+</li>
+<li><code>od</code>命令<blockquote>
+<p><code>od [it Type] 文件</code><br>a         : 默认字符<br>c         : ASCII<br>d[size]   : 十进制，占用size位<br>o[size]   : 八进制<br>x[size]   : 十六进制<br>f[size]   : 浮点数  </p>
+</blockquote>
+</li>
+</ol>
+<h1 id="四、修改文件时间或创建新文件"><a href="#四、修改文件时间或创建新文件" class="headerlink" title="四、修改文件时间或创建新文件"></a>四、修改文件时间或创建新文件</h1><ol>
+<li>时间<blockquote>
+<p><code>mtime</code>   : 文件修改时间(modification time)<br><code>ctime</code>   : 权限或属性修改时间(status time)<br><code>atime</code>   : 被读取时间，如cat,cp(access time)<br>使用<code>ls -l --time={ctime,atime} 文件或目录</code>即可显示，默认显示mtime  </p>
+</blockquote>
+</li>
+<li><code>touch</code>命令  <blockquote>
+<p><code>touch [-acdmt]</code><br>-a : 修改atime<br>-c : 修改ctime<br>-m : 修改mtime<br>-d : 修改日期，后接日期<br>-t : 修改日期，后接日期 [YYMMDDhhmm]   </p>
+</blockquote>
+</li>
+</ol>
+<h1 id="五、文件权限"><a href="#五、文件权限" class="headerlink" title="五、文件权限"></a>五、文件权限</h1><ol>
+<li><code>umask</code>命令  <blockquote>
+<p>umask<br>umask -S  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># 示例</div><div class="line">[junhan@localhost junhan]$ umask</div><div class="line">0022</div><div class="line">[junhan@localhost junhan]$ umask -S</div><div class="line">u=rwx,g=rx,o=rx</div></pre></td></tr></table></figure>
+</blockquote>
+</li>
+</ol>
+<p>由umask可知，新建一个目录或者文件的默认权限：<br>文件：<code>-rw-rw-rw- - 022 = -rw-r--r--</code><br>目录：<code>drwxrwxrwx - 022 = drwxr-wr-x</code>  </p>
 
       
     </div>
