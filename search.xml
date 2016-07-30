@@ -238,7 +238,7 @@
 <p>写完博文记得要执行以下命令：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">hexo g</div><div class="line">hexo d</div></pre></td></tr></table></figure></p>
 <h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><p>在<code>E:\HEXO</code>目录下的<code>_config.yml</code>文件可以配置博客的一些基础属性，例如博客标题、作者、语言、博客主题等。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># Site</div><div class="line">title: </div><div class="line">subtitle: </div><div class="line">description:</div><div class="line">author: </div><div class="line">language:</div></pre></td></tr></table></figure></p>
 <p>Hexo配置博客前期还是挺简单的，通过上面的几个步骤，博客就搭建好了，不过界面有点low。网上有很多教程教怎么修改主题的。有兴趣可以<a href="https://www.zhihu.com/question/24422335" target="_blank" rel="external">点击这里</a>。</p>
-]]></content>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="http://music.163.com/outchain/player?type=2&id=2080139&auto=1&height=66"></iframe>]]></content>
     </entry>
     
   
