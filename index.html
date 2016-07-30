@@ -258,6 +258,125 @@
             
               
                 
+                <a class="post-title-link" href="/2016/07/30/闲着没事乱折腾/" itemprop="url">
+                  闲着没事乱折腾
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-30T23:00:06+08:00" content="2016-07-30">
+              2016-07-30
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/30/闲着没事乱折腾/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/30/闲着没事乱折腾/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>本来今晚是要干活的，有点懒散，索性继续瞎搞Hexo博客配置。<br>今天把我的博客主题换成Next了，看来看去还是这个比较简约。之后又胡乱配置了一些东西，例如标签云，背景图片，背景音乐。<br>这里记下Next主题官方教程位置<a href="http://theme-next.iissnan.com/getting-started.html#install-next-theme" target="_blank" rel="external">开始使用</a>  </p>
+<hr>
+<h2 id="添加标签云"><a href="#添加标签云" class="headerlink" title="添加标签云"></a>添加标签云</h2><ol>
+<li><p>先在Hexo站目录下执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new page tags</div></pre></td></tr></table></figure>
+</li>
+<li><p>之后生成<code>/source/tags/tags.md</code>，打开修改为如下格式，即添加type: “tags”：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">title: tags</div><div class="line">date: 2016-07-30 21:23:21</div><div class="line">type: &quot;tags&quot;</div><div class="line">---</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="添加背景图片"><a href="#添加背景图片" class="headerlink" title="添加背景图片"></a>添加背景图片</h2><p>打开<code>\themes\next\source\css\_schemes\Pisces\index.sty</code>，可以看到第一句是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">body &#123; background: #f5f7f9; &#125;</div></pre></td></tr></table></figure></p>
+<p>把他改成如下形式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">body &#123; background:url(/images/background.jpg); &#125;</div></pre></td></tr></table></figure></p>
+<p>其中<code>/images/background.jpg</code>是事先放好的背景图片</p>
+<h2 id="添加背景音乐"><a href="#添加背景音乐" class="headerlink" title="添加背景音乐"></a>添加背景音乐</h2><p>这里使用网易云音乐，很简单。<br><img src="http://i1.piimg.com/567571/17fed33033acc95d.png" alt="网易云"><br>如上图，点<code>生成外链播放器</code>，然后直接把HTML代码贴到markdown博文下就可以了，效果如下：</p>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="http://music.163.com/outchain/player?type=2&id=85621&auto=1&height=66"></iframe>
+
+
+
+
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/07/26/Windows10-CentOS7双系统-UEFI-GPT/" itemprop="url">
                   Windows10+CentOS7双系统(UEFI+GPT)
                 </a>
@@ -796,7 +915,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-count">6</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -806,7 +925,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title><![CDATA[闲着没事乱折腾]]></title>
+      <url>http://yoursite.com/2016/07/30/%E9%97%B2%E7%9D%80%E6%B2%A1%E4%BA%8B%E4%B9%B1%E6%8A%98%E8%85%BE/</url>
+      <content type="html"><![CDATA[<p>本来今晚是要干活的，有点懒散，索性继续瞎搞Hexo博客配置。<br>今天把我的博客主题换成Next了，看来看去还是这个比较简约。之后又胡乱配置了一些东西，例如标签云，背景图片，背景音乐。<br>这里记下Next主题官方教程位置<a href="http://theme-next.iissnan.com/getting-started.html#install-next-theme" target="_blank" rel="external">开始使用</a>  </p>
+<hr>
+<h2 id="添加标签云"><a href="#添加标签云" class="headerlink" title="添加标签云"></a>添加标签云</h2><ol>
+<li><p>先在Hexo站目录下执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new page tags</div></pre></td></tr></table></figure>
+</li>
+<li><p>之后生成<code>/source/tags/tags.md</code>，打开修改为如下格式，即添加type: “tags”：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">title: tags</div><div class="line">date: 2016-07-30 21:23:21</div><div class="line">type: &quot;tags&quot;</div><div class="line">---</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="添加背景图片"><a href="#添加背景图片" class="headerlink" title="添加背景图片"></a>添加背景图片</h2><p>打开<code>\themes\next\source\css\_schemes\Pisces\index.sty</code>，可以看到第一句是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">body &#123; background: #f5f7f9; &#125;</div></pre></td></tr></table></figure></p>
+<p>把他改成如下形式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">body &#123; background:url(/images/background.jpg); &#125;</div></pre></td></tr></table></figure></p>
+<p>其中<code>/images/background.jpg</code>是事先放好的背景图片</p>
+<h2 id="添加背景音乐"><a href="#添加背景音乐" class="headerlink" title="添加背景音乐"></a>添加背景音乐</h2><p>这里使用网易云音乐，很简单。<br><img src="http://i1.piimg.com/567571/17fed33033acc95d.png" alt="网易云"><br>如上图，点<code>生成外链播放器</code>，然后直接把HTML代码贴到markdown博文下就可以了，效果如下：</p>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="http://music.163.com/outchain/player?type=2&id=85621&auto=1&height=66"></iframe>
+
+
+
+
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[Windows10+CentOS7双系统(UEFI+GPT)]]></title>
       <url>http://yoursite.com/2016/07/26/Windows10-CentOS7%E5%8F%8C%E7%B3%BB%E7%BB%9F-UEFI-GPT/</url>
       <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>眼馋双系统有一段时间了，然而之前安装失败格盘的惨痛教训历历在目。这几天闲着没事查阅了好多资料，怂了一个星期，终于决定再来一次尝试。总的来说安装过程还是挺顺利的，但是后期Windows引导的问题折腾了三天。。。<br>技术不好，最终搞出个另类的双系统：默认启动Windows10，同时支持Windows Quick Boot；BIOS下切换到CentOS。  </p>
@@ -238,7 +263,9 @@
 <p>写完博文记得要执行以下命令：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">hexo g</div><div class="line">hexo d</div></pre></td></tr></table></figure></p>
 <h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><p>在<code>E:\HEXO</code>目录下的<code>_config.yml</code>文件可以配置博客的一些基础属性，例如博客标题、作者、语言、博客主题等。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># Site</div><div class="line">title: </div><div class="line">subtitle: </div><div class="line">description:</div><div class="line">author: </div><div class="line">language:</div></pre></td></tr></table></figure></p>
 <p>Hexo配置博客前期还是挺简单的，通过上面的几个步骤，博客就搭建好了，不过界面有点low。网上有很多教程教怎么修改主题的。有兴趣可以<a href="https://www.zhihu.com/question/24422335" target="_blank" rel="external">点击这里</a>。</p>
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="http://music.163.com/outchain/player?type=2&id=2080139&auto=1&height=66"></iframe>]]></content>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="http://music.163.com/outchain/player?type=2&id=2080139&auto=1&height=66"></iframe>
+
+]]></content>
     </entry>
     
   
