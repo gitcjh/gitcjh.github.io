@@ -7,6 +7,7 @@
       <title><![CDATA[闲着没事乱折腾]]></title>
       <url>http://yoursite.com/2016/07/30/%E9%97%B2%E7%9D%80%E6%B2%A1%E4%BA%8B%E4%B9%B1%E6%8A%98%E8%85%BE/</url>
       <content type="html"><![CDATA[<p>本来今晚是要干活的，有点懒散，索性继续瞎搞Hexo博客配置。<br>今天把我的博客主题换成Next了，看来看去还是这个比较简约。之后又胡乱配置了一些东西，例如标签云，背景图片，背景音乐。<br>这里记下Next主题官方教程位置<a href="http://theme-next.iissnan.com/getting-started.html#install-next-theme" target="_blank" rel="external">开始使用</a>  </p>
+<a id="more"></a>
 <hr>
 <h2 id="添加标签云"><a href="#添加标签云" class="headerlink" title="添加标签云"></a>添加标签云</h2><ol>
 <li><p>先在Hexo站目录下执行</p>
