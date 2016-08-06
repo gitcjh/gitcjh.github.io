@@ -4,6 +4,27 @@
   
     
     <entry>
+      <title><![CDATA[Windows1 0 删除内置app]]></title>
+      <url>http://yoursite.com/2016/08/06/Windows-10-%E5%88%A0%E9%99%A4%E5%86%85%E7%BD%AEapp/</url>
+      <content type="html"><![CDATA[<p>Windows10自带了一大堆乱七八糟的app，而且在控制面板的卸载程序找不到这些= =，其实只要两条命令就可以卸载。</p>
+<h2 id="1-使用Windows-PowerShell卸载"><a href="#1-使用Windows-PowerShell卸载" class="headerlink" title="1.使用Windows PowerShell卸载"></a>1.使用Windows PowerShell卸载</h2><ul>
+<li><p>命令<strong>Get-AppxPackage -AllUsers</strong>获取app列表<br>先打开PowerShell，在Cortana直接搜就可以，然后右键管理员运行。</p>
+<a id="more"></a>
+<p><img src="http://i4.piimg.com/567571/226061d39aba3748.png" alt="PowerShell"><br>输入命令<code>Get-AppxPackage -AllUsers</code>，然后就会输出所有app列表，大致上长的和下面一样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Name                   : Microsoft.BingWeather</div><div class="line">Publisher              : CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US</div><div class="line">Architecture           : X86</div><div class="line">ResourceId             :</div><div class="line">Version                : 4.7.118.0</div><div class="line">PackageFullName        : Microsoft.BingWeather_4.7.118.0_x86__8wekyb3d8bbwe</div><div class="line">...</div></pre></td></tr></table></figure>
+</li>
+<li><p>命令<strong>Remove-AppxPackage PackageFullName</strong>卸载程序<br>例如卸载上面说的BingWeather，可以执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Remove-AppxPackage Microsoft.BingWeather_4.7.118.0_x86__8wekyb3d8bbwe</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="2-删除安装包"><a href="#2-删除安装包" class="headerlink" title="2.删除安装包"></a>2.删除安装包</h2><p>使用PowerShell卸载程序之后，这些内置app的安装包还残留在C盘中，作为一个强迫症患者，不能忍！<br>这些安装包的路径如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">C:\Program Files\WindowsApps</div></pre></td></tr></table></figure></p>
+<p>选择对应的安装包删除即可。</p>
+<p>每博一首歌</p>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="http://music.163.com/outchain/player?type=2&id=27759600&auto=0&height=66"></iframe>
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[Hexo 绑定自定义域名]]></title>
       <url>http://yoursite.com/2016/08/03/Hexo-%E7%BB%91%E5%AE%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%9F%9F%E5%90%8D/</url>
       <content type="html"><![CDATA[<p>搭建好属于自己的博客并托管到之后GitHub会分配一个二级域名<code>name.github.io</code>，当然也可以绑定自定义的域名。</p>

@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="windows10," />
 
 
 
@@ -84,16 +84,24 @@
 
 
 
-<meta name="description" content="今天天气真好">
-<meta property="og:type" content="website">
-<meta property="og:title" content="image">
-<meta property="og:url" content="http://yoursite.com/image/index.html">
+<meta name="description" content="Windows10自带了一大堆乱七八糟的app，而且在控制面板的卸载程序找不到这些= =，其实只要两条命令就可以卸载。
+1.使用Windows PowerShell卸载
+命令Get-AppxPackage -AllUsers获取app列表先打开PowerShell，在Cortana直接搜就可以，然后右键管理员运行。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows1 0 删除内置app">
+<meta property="og:url" content="http://yoursite.com/2016/08/06/Windows-10-删除内置app/index.html">
 <meta property="og:site_name" content="Junhan's Blog">
-<meta property="og:description" content="今天天气真好">
-<meta property="og:updated_time" content="2016-07-10T11:43:48.117Z">
+<meta property="og:description" content="Windows10自带了一大堆乱七八糟的app，而且在控制面板的卸载程序找不到这些= =，其实只要两条命令就可以卸载。
+1.使用Windows PowerShell卸载
+命令Get-AppxPackage -AllUsers获取app列表先打开PowerShell，在Cortana直接搜就可以，然后右键管理员运行。">
+<meta property="og:image" content="http://i4.piimg.com/567571/226061d39aba3748.png">
+<meta property="og:updated_time" content="2016-08-06T01:00:03.113Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="image">
-<meta name="twitter:description" content="今天天气真好">
+<meta name="twitter:title" content="Windows1 0 删除内置app">
+<meta name="twitter:description" content="Windows10自带了一大堆乱七八糟的app，而且在控制面板的卸载程序找不到这些= =，其实只要两条命令就可以卸载。
+1.使用Windows PowerShell卸载
+命令Get-AppxPackage -AllUsers获取app列表先打开PowerShell，在Cortana直接搜就可以，然后右键管理员运行。">
+<meta name="twitter:image" content="http://i4.piimg.com/567571/226061d39aba3748.png">
 
 
 
@@ -114,15 +122,9 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/image/"/>
+  <link rel="canonical" href="http://yoursite.com/2016/08/06/Windows-10-删除内置app/"/>
 
-  <title>
-  
-
-  
-    image | Junhan's Blog
-  
-</title>
+  <title> Windows1 0 删除内置app | Junhan's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -143,7 +145,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -246,9 +248,163 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
     
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Windows1 0 删除内置app
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-08-06T08:40:36+08:00" content="2016-08-06">
+              2016-08-06
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/08/06/Windows-10-删除内置app/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/06/Windows-10-删除内置app/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
       
-    
+      
+
+      
+        <p>Windows10自带了一大堆乱七八糟的app，而且在控制面板的卸载程序找不到这些= =，其实只要两条命令就可以卸载。</p>
+<h2 id="1-使用Windows-PowerShell卸载"><a href="#1-使用Windows-PowerShell卸载" class="headerlink" title="1.使用Windows PowerShell卸载"></a>1.使用Windows PowerShell卸载</h2><ul>
+<li><p>命令<strong>Get-AppxPackage -AllUsers</strong>获取app列表<br>先打开PowerShell，在Cortana直接搜就可以，然后右键管理员运行。</p>
+<a id="more"></a>
+<p><img src="http://i4.piimg.com/567571/226061d39aba3748.png" alt="PowerShell"><br>输入命令<code>Get-AppxPackage -AllUsers</code>，然后就会输出所有app列表，大致上长的和下面一样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Name                   : Microsoft.BingWeather</div><div class="line">Publisher              : CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US</div><div class="line">Architecture           : X86</div><div class="line">ResourceId             :</div><div class="line">Version                : 4.7.118.0</div><div class="line">PackageFullName        : Microsoft.BingWeather_4.7.118.0_x86__8wekyb3d8bbwe</div><div class="line">...</div></pre></td></tr></table></figure>
+</li>
+<li><p>命令<strong>Remove-AppxPackage PackageFullName</strong>卸载程序<br>例如卸载上面说的BingWeather，可以执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Remove-AppxPackage Microsoft.BingWeather_4.7.118.0_x86__8wekyb3d8bbwe</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="2-删除安装包"><a href="#2-删除安装包" class="headerlink" title="2.删除安装包"></a>2.删除安装包</h2><p>使用PowerShell卸载程序之后，这些内置app的安装包还残留在C盘中，作为一个强迫症患者，不能忍！<br>这些安装包的路径如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">C:\Program Files\WindowsApps</div></pre></td></tr></table></figure></p>
+<p>选择对应的安装包删除即可。</p>
+<p>每博一首歌</p>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="http://music.163.com/outchain/player?type=2&id=27759600&auto=0&height=66"></iframe>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/windows10/" rel="tag">#windows10</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/03/Hexo-绑定自定义域名/" rel="next" title="Hexo 绑定自定义域名">
+                <i class="fa fa-chevron-left"></i> Hexo 绑定自定义域名
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
   </div>
 
 
@@ -259,8 +415,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="image/index.html"
-           data-title="image" data-url="http://yoursite.com/image/index.html">
+      <div class="ds-thread" data-thread-key="2016/08/06/Windows-10-删除内置app/"
+           data-title="Windows1 0 删除内置app" data-url="http://yoursite.com/2016/08/06/Windows-10-删除内置app/">
       </div>
     
   </div>
@@ -284,8 +440,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/uploads/avatar.png"
@@ -357,6 +522,17 @@
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-使用Windows-PowerShell卸载"><span class="nav-number">1.</span> <span class="nav-text">1.使用Windows PowerShell卸载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-删除安装包"><span class="nav-number">2.</span> <span class="nav-text">2.删除安装包</span></a></li></ol></div>
+            
+          </div>
+        </section>
       
 
     </div>
@@ -460,6 +636,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
 
   
 
