@@ -14,6 +14,8 @@
 <blockquote>
 <p><strong>F_SETFL</strong> 将文件状态标志设置为第三个参数的值。(取为整型值)<br><strong>F_SETFD</strong> 对于filedes 设置文件描述符标志。</p>
 </blockquote>
+<hr>
+<h2 id="Exercise3-4"><a href="#Exercise3-4" class="headerlink" title="Exercise3.4"></a>Exercise3.4</h2><p>在许多程序中都包含下面一段代码：<br>    dup2(fd, 0);<br>    dup2(fd, 1);<br>    dup2(fd, 2);<br>    if (fd &gt; 2)<br>    close(fd);<br>为了说明if语句的必要性，假设fd是1，画出每次调用dup2时3个描述符项及相应的文件表项的变化情况。然后再画出fd为3的情况。<br><strong>Ans: </strong>如果fd是1，执行dup2(fd，1)后返回1，但是没有关闭描述符1（见3 .12节）。调用3次dup2后，3个描述符指向相同的文件表项，所以不需要关闭描述符。如果fd是3，调用3次dup2后，有4个描述符指向相同的文件表项，所以需要关闭描述符3。<br>事实上，0、1、2分别表示标准输入，标准输出，标准错误输出，一般是不关闭的。而当<code>fd &gt; 2</code>时，表示其余的文件描述符，一般而言需要关闭。</p>
 ]]></content>
     </entry>
     
