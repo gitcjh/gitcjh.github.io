@@ -90,10 +90,12 @@
 <meta property="og:url" content="http://yoursite.com/2016/08/29/apue-chapter3-Files-IO/index.html">
 <meta property="og:site_name" content="Junhan's Blog">
 <meta property="og:description" content="apue chapter3 Files IOExercise3.2编写一个同3.12节中的dup2功能相同的函数，要求不调用fcntl函数并且要有正确的出错处理。思路：递归调用dup123456789101112131415161718192021222324252627282930313233#include &amp;lt;ourhdr.h&amp;gt;#include &amp;lt;fcntl.h&amp;gt;int">
-<meta property="og:updated_time" content="2016-08-29T07:56:24.844Z">
+<meta property="og:image" content="http://i2.buimg.com/567571/a2ef9282a1dda9c5.jpg">
+<meta property="og:updated_time" content="2016-08-29T08:21:23.102Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="apue chapter3 Files IO">
 <meta name="twitter:description" content="apue chapter3 Files IOExercise3.2编写一个同3.12节中的dup2功能相同的函数，要求不调用fcntl函数并且要有正确的出错处理。思路：递归调用dup123456789101112131415161718192021222324252627282930313233#include &amp;lt;ourhdr.h&amp;gt;#include &amp;lt;fcntl.h&amp;gt;int">
+<meta name="twitter:image" content="http://i2.buimg.com/567571/a2ef9282a1dda9c5.jpg">
 
 
 
@@ -307,6 +309,11 @@
 
       
         <h1 id="apue-chapter3-Files-IO"><a href="#apue-chapter3-Files-IO" class="headerlink" title="apue chapter3 Files IO"></a>apue chapter3 Files IO</h1><h2 id="Exercise3-2"><a href="#Exercise3-2" class="headerlink" title="Exercise3.2"></a>Exercise3.2</h2><p>编写一个同3.12节中的dup2功能相同的函数，要求不调用fcntl函数并且要有正确的出错处理。<br><strong>思路：递归调用dup</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ourhdr.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup_2</span><span class="params">(<span class="keyword">int</span>, <span class="keyword">int</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="comment">//dup_2(1,10);</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* if success</span></div><div class="line"> *      return the filedes</div><div class="line"> * else</div><div class="line"> *      return -1</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup_2</span><span class="params">(<span class="keyword">int</span> filedes, <span class="keyword">int</span> filedes2)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> (filedes2 &lt; <span class="number">0</span>) <span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (filedes == filedes2) <span class="keyword">return</span> filedes2;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (close(filedes2) == <span class="number">-1</span>) <span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line"></div><div class="line">    <span class="keyword">int</span> newfd;</div><div class="line">    <span class="keyword">if</span> ((newfd = dup(filedes)) == filedes2) <span class="keyword">return</span> filedes;</div><div class="line">    <span class="keyword">else</span></div><div class="line">    &#123;</div><div class="line">        dup_2(filedes, filedes2);</div><div class="line">        close(newfd);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> filedes2;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="Exercise3-3"><a href="#Exercise3-3" class="headerlink" title="Exercise3.3"></a>Exercise3.3</h2><p>假设一个进程执行下面的3个函数调用：<br>    fd1 = open(pathname, oflags);<br>    fd2 = dup(fd1);<br>    fd3 = open(pathname, oflags);<br>画出结果图（见图3-3）。对fcntl作用于fd1来说，F_SETFD命令会影响哪一个文件描述符？FSETFL呢？<br><strong>Ans: </strong>每次调用open函数就分配一个文件表项，如果两次打开的是相同的文件，则两个文件表项指向相同的v节点。调用dup引用已存在的文件表项（此处指fd1的文件表项），见图C-1。当F_SETFD作用于fd1时，只影响fd1的文件描述符标志；F_SETFL作用于fd1时，则影响fd1及fd2的文件描述符标志。<br><img src="http://i2.buimg.com/567571/a2ef9282a1dda9c5.jpg" alt="图C-1"></p>
+<blockquote>
+<p><strong>F_SETFL</strong> 将文件状态标志设置为第三个参数的值。(取为整型值)<br><strong>F_SETFD</strong> 对于filedes 设置文件描述符标志。</p>
+</blockquote>
 
       
     </div>
@@ -507,7 +514,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#apue-chapter3-Files-IO"><span class="nav-number">1.</span> <span class="nav-text">apue chapter3 Files IO</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Exercise3-2"><span class="nav-number">1.1.</span> <span class="nav-text">Exercise3.2</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#apue-chapter3-Files-IO"><span class="nav-number">1.</span> <span class="nav-text">apue chapter3 Files IO</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Exercise3-2"><span class="nav-number">1.1.</span> <span class="nav-text">Exercise3.2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exercise3-3"><span class="nav-number">1.2.</span> <span class="nav-text">Exercise3.3</span></a></li></ol></li></ol></div>
             
           </div>
         </section>
