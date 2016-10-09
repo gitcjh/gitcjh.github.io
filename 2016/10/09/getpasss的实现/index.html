@@ -84,16 +84,34 @@
 
 
 
-<meta name="description" content="APUE 11.10 getpass函数的实现">
+<meta name="description" content="APUE 11.10 getpass函数的实现
+注意点
+
+
+调用函数ctermid打开控制终端，而不是直接将/dev/tty写在程序中。
+只是读、写控制终端，如果不能以读、写方式打开此设备则出错返回。
+阻塞两个信号SIGINT和SIGTSTP。如果不这样做，则在输入INTR字符时就会使程序终止，并使终端仍处于禁止回送状态。与此相类似，输入SUSP字符时将使程序暂停，并且在禁止回送状态下返回到she">
 <meta property="og:type" content="article">
 <meta property="og:title" content="getpasss的实现">
 <meta property="og:url" content="http://yoursite.com/2016/10/09/getpasss的实现/index.html">
 <meta property="og:site_name" content="Junhan's Blog">
-<meta property="og:description" content="APUE 11.10 getpass函数的实现">
-<meta property="og:updated_time" content="2016-10-09T08:45:28.159Z">
+<meta property="og:description" content="APUE 11.10 getpass函数的实现
+注意点
+
+
+调用函数ctermid打开控制终端，而不是直接将/dev/tty写在程序中。
+只是读、写控制终端，如果不能以读、写方式打开此设备则出错返回。
+阻塞两个信号SIGINT和SIGTSTP。如果不这样做，则在输入INTR字符时就会使程序终止，并使终端仍处于禁止回送状态。与此相类似，输入SUSP字符时将使程序暂停，并且在禁止回送状态下返回到she">
+<meta property="og:updated_time" content="2016-10-09T08:56:28.821Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="getpasss的实现">
-<meta name="twitter:description" content="APUE 11.10 getpass函数的实现">
+<meta name="twitter:description" content="APUE 11.10 getpass函数的实现
+注意点
+
+
+调用函数ctermid打开控制终端，而不是直接将/dev/tty写在程序中。
+只是读、写控制终端，如果不能以读、写方式打开此设备则出错返回。
+阻塞两个信号SIGINT和SIGTSTP。如果不这样做，则在输入INTR字符时就会使程序终止，并使终端仍处于禁止回送状态。与此相类似，输入SUSP字符时将使程序暂停，并且在禁止回送状态下返回到she">
 
 
 
@@ -306,8 +324,20 @@
       
 
       
-        <h2 id="APUE-11-10-getpass函数的实现"><a href="#APUE-11-10-getpass函数的实现" class="headerlink" title="APUE 11.10 getpass函数的实现"></a>APUE 11.10 getpass函数的实现</h2><a id="more"></a>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div></pre></td><td class="code"><pre><div class="line">#include &lt;signal.h&gt;</div><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;termios.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line"></div><div class="line">#define MAX_PASS_LEN 8</div><div class="line"></div><div class="line">char *getpass(const char *prompt)</div><div class="line">&#123;</div><div class="line">    static char buf[MAX_PASS_LEN + 1];</div><div class="line">    char *ptr;</div><div class="line">    sigset_t sig, sigsave;</div><div class="line">    struct termios term, termsave;</div><div class="line">    FILE *fp;</div><div class="line">    int c;</div><div class="line"></div><div class="line">    if ( (fp = fopen(ctermid(NULL), &quot;r+&quot;)) == NULL )</div><div class="line">        return NULL;</div><div class="line">    setbuf(fp, NULL);</div><div class="line"></div><div class="line">    /*block sigint &amp; sigtstp*/</div><div class="line">    sigemptyset(&amp;sig);</div><div class="line">    sigaddset(&amp;sig, SIGINT);</div><div class="line">    sigaddset(&amp;sig, SIGTSTP);</div><div class="line">    sigprocmask(SIG_BLOCK, &amp;sig, &amp;sigsave);</div><div class="line"></div><div class="line">    tcgetattr(fileno(fp), &amp;termsave);</div><div class="line">    term = termsave;</div><div class="line">    term.c_lflag &amp;= ~(ECHO | ECHOE | ECHOK | ECHONL);</div><div class="line">    tcsetattr(fileno(fp), TCSAFLUSH, &amp;term);</div><div class="line"></div><div class="line">    fputs(prompt, fp);//output prompt</div><div class="line"></div><div class="line">    ptr = buf;</div><div class="line">    while ( (c = getc(fp)) != EOF &amp;&amp; c != &apos;\n&apos; )</div><div class="line">    &#123;</div><div class="line">        if (ptr &lt; &amp;buf[MAX_PASS_LEN])</div><div class="line">        &#123;</div><div class="line">            *ptr = c;</div><div class="line">            ptr++;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    *ptr = &apos;\0&apos;;</div><div class="line">    putc(&apos;\n&apos;, fp);</div><div class="line"></div><div class="line">    tcsetattr(fileno(fp), TCSAFLUSH, &amp;termsave);</div><div class="line">    sigprocmask(SIG_SETMASK, &amp;sigsave, NULL);</div><div class="line"></div><div class="line">    fclose(fp);</div><div class="line"></div><div class="line">    return buf;</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main()</div><div class="line">&#123;</div><div class="line">    char *pass;</div><div class="line"></div><div class="line">    pass = getpass(&quot;Please input the password: &quot;);</div><div class="line"></div><div class="line">    printf(&quot;PASS: %s\n&quot;, pass);</div><div class="line"></div><div class="line">    exit(0);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+        <h2 id="APUE-11-10-getpass函数的实现"><a href="#APUE-11-10-getpass函数的实现" class="headerlink" title="APUE 11.10 getpass函数的实现"></a>APUE 11.10 getpass函数的实现</h2><ol>
+<li>注意点</li>
+</ol>
+<ul>
+<li>调用函数<code>ctermid</code>打开控制终端，而不是直接将<code>/dev/tty</code>写在程序中。</li>
+<li>只是读、写控制终端，如果不能以读、写方式打开此设备则出错返回。</li>
+<li>阻塞两个信号<code>SIGINT</code>和<code>SIGTSTP</code>。如果不这样做，则在输入<code>INTR</code>字符时就会使程序终止，<strong>并使终端仍处于禁止回送状态</strong>。与此相类似，输入<code>SUSP</code>字符时将使程序暂停，并且在禁止回送状态下返回到shell。</li>
+<li>最多只可取8个字符作为口令。输入的多余字符则被忽略。</li>
+</ul>
+<a id="more"></a>
+<ol>
+<li>源码<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div></pre></td><td class="code"><pre><div class="line">#include &lt;signal.h&gt;</div><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;termios.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line"></div><div class="line">#define MAX_PASS_LEN 8</div><div class="line"></div><div class="line">char *getpass(const char *prompt)</div><div class="line">&#123;</div><div class="line">    static char buf[MAX_PASS_LEN + 1];</div><div class="line">    char *ptr;</div><div class="line">    sigset_t sig, sigsave;</div><div class="line">    struct termios term, termsave;</div><div class="line">    FILE *fp;</div><div class="line">    int c;</div><div class="line"></div><div class="line">    if ( (fp = fopen(ctermid(NULL), &quot;r+&quot;)) == NULL )</div><div class="line">        return NULL;</div><div class="line">    setbuf(fp, NULL);	//set not buffer</div><div class="line"></div><div class="line">    /*block sigint &amp; sigtstp*/</div><div class="line">    sigemptyset(&amp;sig);</div><div class="line">    sigaddset(&amp;sig, SIGINT);</div><div class="line">    sigaddset(&amp;sig, SIGTSTP);</div><div class="line">    sigprocmask(SIG_BLOCK, &amp;sig, &amp;sigsave);</div><div class="line"></div><div class="line">    tcgetattr(fileno(fp), &amp;termsave);</div><div class="line">    term = termsave;</div><div class="line">    term.c_lflag &amp;= ~(ECHO | ECHOE | ECHOK | ECHONL);</div><div class="line">    tcsetattr(fileno(fp), TCSAFLUSH, &amp;term);</div><div class="line"></div><div class="line">    fputs(prompt, fp);//output prompt</div><div class="line"></div><div class="line">    ptr = buf;</div><div class="line">    while ( (c = getc(fp)) != EOF &amp;&amp; c != &apos;\n&apos; )</div><div class="line">    &#123;</div><div class="line">        if (ptr &lt; &amp;buf[MAX_PASS_LEN])	//abandon others character</div><div class="line">        &#123;</div><div class="line">            *ptr = c;</div><div class="line">            ptr++;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    *ptr = &apos;\0&apos;;</div><div class="line">    putc(&apos;\n&apos;, fp);</div><div class="line"></div><div class="line">    tcsetattr(fileno(fp), TCSAFLUSH, &amp;termsave);</div><div class="line">    sigprocmask(SIG_SETMASK, &amp;sigsave, NULL);</div><div class="line"></div><div class="line">    fclose(fp);</div><div class="line"></div><div class="line">    return buf;</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main()</div><div class="line">&#123;</div><div class="line">    char *pass;</div><div class="line"></div><div class="line">    pass = getpass(&quot;Please input the password: &quot;);</div><div class="line"></div><div class="line">    printf(&quot;PASS: %s\n&quot;, pass);</div><div class="line"></div><div class="line">    exit(0);</div><div class="line">&#125;</div></pre></td></tr></table></figure></li>
+</ol>
+
       
     </div>
 

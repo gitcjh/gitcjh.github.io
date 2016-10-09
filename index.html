@@ -311,7 +311,15 @@
 
       
         
-          <h2 id="APUE-11-10-getpass函数的实现"><a href="#APUE-11-10-getpass函数的实现" class="headerlink" title="APUE 11.10 getpass函数的实现"></a>APUE 11.10 getpass函数的实现</h2>
+          <h2 id="APUE-11-10-getpass函数的实现"><a href="#APUE-11-10-getpass函数的实现" class="headerlink" title="APUE 11.10 getpass函数的实现"></a>APUE 11.10 getpass函数的实现</h2><ol>
+<li>注意点</li>
+</ol>
+<ul>
+<li>调用函数<code>ctermid</code>打开控制终端，而不是直接将<code>/dev/tty</code>写在程序中。</li>
+<li>只是读、写控制终端，如果不能以读、写方式打开此设备则出错返回。</li>
+<li>阻塞两个信号<code>SIGINT</code>和<code>SIGTSTP</code>。如果不这样做，则在输入<code>INTR</code>字符时就会使程序终止，<strong>并使终端仍处于禁止回送状态</strong>。与此相类似，输入<code>SUSP</code>字符时将使程序暂停，并且在禁止回送状态下返回到shell。</li>
+<li>最多只可取8个字符作为口令。输入的多余字符则被忽略。</li>
+</ul>
           <div class="post-more-link text-center">
             <a class="btn" href="/2016/10/09/getpasss的实现/#more" rel="contents">
               阅读全文 &raquo;
