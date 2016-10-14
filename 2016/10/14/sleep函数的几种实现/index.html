@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="hexo," />
+  <meta name="keywords" content="apue," />
 
 
 
@@ -84,19 +84,16 @@
 
 
 
-<meta name="description" content="搭建好属于自己的博客并托管到之后GitHub会分配一个二级域名name.github.io，当然也可以绑定自定义的域名。">
+<meta name="description" content="##1 使用select实现1234567891011121314151617181920212223242526272829/*	使用select实现sleep函数		int select (int maxfdp1, fd_set *readfds, fd_set *writefds, 			fd_set *exceptfds, struct timeval *tvptr);		struct t">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hexo 绑定自定义域名">
-<meta property="og:url" content="http://yoursite.com/2016/08/03/Hexo-绑定自定义域名/index.html">
+<meta property="og:title" content="sleep函数的几种实现">
+<meta property="og:url" content="http://yoursite.com/2016/10/14/sleep函数的几种实现/index.html">
 <meta property="og:site_name" content="Junhan's Blog">
-<meta property="og:description" content="搭建好属于自己的博客并托管到之后GitHub会分配一个二级域名name.github.io，当然也可以绑定自定义的域名。">
-<meta property="og:image" content="http://i2.piimg.com/567571/ceaefa6e7d2a64e8.png">
-<meta property="og:image" content="http://i2.piimg.com/567571/c39a8896b97d2f29.png">
-<meta property="og:updated_time" content="2016-08-03T03:30:12.532Z">
+<meta property="og:description" content="##1 使用select实现1234567891011121314151617181920212223242526272829/*	使用select实现sleep函数		int select (int maxfdp1, fd_set *readfds, fd_set *writefds, 			fd_set *exceptfds, struct timeval *tvptr);		struct t">
+<meta property="og:updated_time" content="2016-10-14T10:09:51.248Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo 绑定自定义域名">
-<meta name="twitter:description" content="搭建好属于自己的博客并托管到之后GitHub会分配一个二级域名name.github.io，当然也可以绑定自定义的域名。">
-<meta name="twitter:image" content="http://i2.piimg.com/567571/ceaefa6e7d2a64e8.png">
+<meta name="twitter:title" content="sleep函数的几种实现">
+<meta name="twitter:description" content="##1 使用select实现1234567891011121314151617181920212223242526272829/*	使用select实现sleep函数		int select (int maxfdp1, fd_set *readfds, fd_set *writefds, 			fd_set *exceptfds, struct timeval *tvptr);		struct t">
 
 
 
@@ -117,9 +114,9 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/08/03/Hexo-绑定自定义域名/"/>
+  <link rel="canonical" href="http://yoursite.com/2016/10/14/sleep函数的几种实现/"/>
 
-  <title> Hexo 绑定自定义域名 | Junhan's Blog </title>
+  <title> sleep函数的几种实现 | Junhan's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -262,7 +259,7 @@
             
             
               
-                Hexo 绑定自定义域名
+                sleep函数的几种实现
               
             
           </h1>
@@ -274,8 +271,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-08-03T10:25:36+08:00" content="2016-08-03">
-              2016-08-03
+            <time itemprop="dateCreated" datetime="2016-10-14T18:06:33+08:00" content="2016-10-14">
+              2016-10-14
             </time>
           </span>
 
@@ -285,8 +282,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/08/03/Hexo-绑定自定义域名/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/03/Hexo-绑定自定义域名/" itemprop="commentsCount"></span>
+                <a href="/2016/10/14/sleep函数的几种实现/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/14/sleep函数的几种实现/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -309,16 +306,10 @@
       
 
       
-        <p>搭建好属于自己的博客并托管到之后GitHub会分配一个二级域名<code>name.github.io</code>，当然也可以绑定自定义的域名。</p>
+        <p>##1 使用select实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">/*</div><div class="line">	使用select实现sleep函数</div><div class="line">	</div><div class="line">	int select (int maxfdp1, fd_set *readfds, fd_set *writefds, </div><div class="line">			fd_set *exceptfds, struct timeval *tvptr);</div><div class="line">	</div><div class="line">	struct timeval&#123;</div><div class="line">		long tv_sec; // seconds</div><div class="line">		long tv_usec; // and microseconds </div><div class="line">	&#125;;</div><div class="line">*/</div><div class="line"></div><div class="line">#include &lt;sys/types.h&gt;	/* fd_set data type */</div><div class="line">#include &lt;sys/time.h&gt;	/* struct timval */</div><div class="line">#include &lt;stddef.h&gt;		/**/</div><div class="line">#include &lt;ourhdr.h&gt;</div><div class="line"></div><div class="line">#define MAGNIFICATION 1000000</div><div class="line"></div><div class="line">void sleep(unsigned int nusecs)</div><div class="line">&#123;</div><div class="line">	struct timeval tval;</div><div class="line"></div><div class="line">	tval.tv_sec = nusecs / MAGNIFICATION;</div><div class="line">	tval.tv_sec = nusecs % MAGNIFICATION;</div><div class="line"></div><div class="line">	/*接受到信号或者时间到期*/</div><div class="line">	select(0, NULL, NULL, &amp;tval);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <a id="more"></a>
-<p><iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="http://music.163.com/outchain/player?type=2&id=33556489&auto=0&height=66"></iframe></p>
-<h1 id="1-申请域名"><a href="#1-申请域名" class="headerlink" title="1.申请域名"></a>1.申请域名</h1><p>国内申请域名可以在万网或者是腾讯云上等购买，域名并不是想象中的那么贵，我买的域名也就5软妹币/年，挺划算的。</p>
-<h1 id="2-添加CNAME"><a href="#2-添加CNAME" class="headerlink" title="2.添加CNAME"></a>2.添加CNAME</h1><p>在站点根目录的的source目录下新建一个名为<code>CNAME</code>的文件，里面写上自定义域名，比如我的CNAME是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">junhan.win</div></pre></td></tr></table></figure></p>
-<p>之后<code>hexo d</code>提交到github即可。</p>
-<h1 id="3-添加域名解析"><a href="#3-添加域名解析" class="headerlink" title="3.添加域名解析"></a>3.添加域名解析</h1><p>万网上可以解析域名，dnspod也可以。既然我的域名是在万网上买的，所以就直接在万网上进行解析。</p>
-<h3 id="a-添加两个指向GitHub服务器的A记录，如下图"><a href="#a-添加两个指向GitHub服务器的A记录，如下图" class="headerlink" title="a.添加两个指向GitHub服务器的A记录，如下图"></a>a.添加两个指向GitHub服务器的A记录，如下图</h3><p><img src="http://i2.piimg.com/567571/ceaefa6e7d2a64e8.png" alt="添加A记录"></p>
-<h3 id="b-添加指向github二级域名的CNAME记录，如下图"><a href="#b-添加指向github二级域名的CNAME记录，如下图" class="headerlink" title="b.添加指向github二级域名的CNAME记录，如下图"></a>b.添加指向github二级域名的CNAME记录，如下图</h3><p><img src="http://i2.piimg.com/567571/c39a8896b97d2f29.png" alt="添加CNAME记录"></p>
-<h1 id="4-使用自定义域名直接访问HEXO博客"><a href="#4-使用自定义域名直接访问HEXO博客" class="headerlink" title="4.使用自定义域名直接访问HEXO博客"></a>4.使用自定义域名直接访问HEXO博客</h1><p><a href="http://junhan.win" target="_blank" rel="external">http://junhan.win</a>: <a href="http://junhan.win" target="_blank" rel="external">Demo</a></p>
+<p>##2 使用poll实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">/*</div><div class="line">	使用poll实现sleep函数(time 为毫秒)</div><div class="line">	</div><div class="line">	int poll(struct pollfd fdarry[], unsigned lonng fds, int timeout);</div><div class="line"></div><div class="line">	struct pollfd &#123;</div><div class="line">		int fd; // file descriptor to check, or &lt; 0 to ignore</div><div class="line">		short events; //events of interest on fd</div><div class="line">		short revents;	// events that occurred on fd</div><div class="line">	&#125; ;</div><div class="line">*/</div><div class="line"></div><div class="line">#include &lt;stropts.h&gt;</div><div class="line">#include &lt;poll.h&gt;</div><div class="line"></div><div class="line">#define MAGNIFICATION 1000</div><div class="line"></div><div class="line">void sleep(unsigned int nusecs)</div><div class="line">&#123;</div><div class="line">	struct pollfd dummy;</div><div class="line">	int timeout;</div><div class="line"></div><div class="line">	if ( (timeout = nusecs / MAGNIFICATION) &lt;= 0)</div><div class="line">		timeout = 1;</div><div class="line"></div><div class="line">	/*接受到信号或者时间到期*/</div><div class="line">	poll(&amp;dummy, 0, timeout);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>##3 使用signal实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line">/*</div><div class="line">	使用sigation实现sleep函数</div><div class="line"></div><div class="line">*/</div><div class="line"></div><div class="line"></div><div class="line">#include &lt;signal.h&gt;</div><div class="line">#include &lt;stddef.h&gt;</div><div class="line">#include &lt;ourhdr.h&gt;</div><div class="line"></div><div class="line">static void sig_alrm(void)</div><div class="line">&#123;</div><div class="line">	return; //nothing to do</div><div class="line">&#125;</div><div class="line"></div><div class="line">unsigned int sleep(unsigned int nsecs)</div><div class="line">&#123;</div><div class="line">	struct sigaction newact, oldact;</div><div class="line">	sigset_t newmask, oldmask, suspmask;</div><div class="line">	unsigned int unslept;</div><div class="line"></div><div class="line">	newact.sa_handler = sig_alrm;</div><div class="line">	sigemptyset(&amp;newact.sa_mask);</div><div class="line">	newact.sa_falgs = 0;</div><div class="line">	sigaction(SIGALRM, &amp;newact, &amp;oldact);</div><div class="line"></div><div class="line">	</div><div class="line">	sigemptyset(&amp;newmask);</div><div class="line">	sigaddset(&amp;newmask, SIGALRM);</div><div class="line"></div><div class="line">	/*block SIGALRM and save current signal mask*/</div><div class="line">	sigprocmask(SIG_BLOCK, &amp;newmask, &amp;oldmask);</div><div class="line"></div><div class="line">	alarm(nsecs);</div><div class="line"></div><div class="line">	suspmask = oldmask;</div><div class="line">	sigadelset(&amp;suspmask, SIGALRM);	//make sure SIGALRM isn&apos;t blocked</div><div class="line"></div><div class="line">	sigsuspend(&amp;suspmask);	//wait for ang signal to be caught</div><div class="line"></div><div class="line">	unslept = alarm(0);</div><div class="line">	sigaction(SIGALRM, &amp;oldact, NULL);	//reset previous action</div><div class="line">	sigprocmask(SIG_SETMASK, &amp;oldmask, NULL);</div><div class="line"></div><div class="line">	return unslept;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -341,7 +332,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/hexo/" rel="tag">#hexo</a>
+            <a href="/tags/apue/" rel="tag">#apue</a>
           
         </div>
       
@@ -350,17 +341,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/07/30/闲着没事乱折腾/" rel="next" title="闲着没事乱折腾">
-                <i class="fa fa-chevron-left"></i> 闲着没事乱折腾
+              <a href="/2016/10/09/getpasss的实现/" rel="next" title="getpasss的实现">
+                <i class="fa fa-chevron-left"></i> getpasss的实现
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/08/06/Windows-10-删除内置app/" rel="prev" title="Windows1 0 删除内置app">
-                Windows1 0 删除内置app <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -409,8 +396,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/08/03/Hexo-绑定自定义域名/"
-           data-title="Hexo 绑定自定义域名" data-url="http://yoursite.com/2016/08/03/Hexo-绑定自定义域名/">
+      <div class="ds-thread" data-thread-key="2016/10/14/sleep函数的几种实现/"
+           data-title="sleep函数的几种实现" data-url="http://yoursite.com/2016/10/14/sleep函数的几种实现/">
       </div>
     
   </div>
@@ -523,7 +510,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-申请域名"><span class="nav-number">1.</span> <span class="nav-text">1.申请域名</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-添加CNAME"><span class="nav-number">2.</span> <span class="nav-text">2.添加CNAME</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-添加域名解析"><span class="nav-number">3.</span> <span class="nav-text">3.添加域名解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-添加两个指向GitHub服务器的A记录，如下图"><span class="nav-number">3.0.1.</span> <span class="nav-text">a.添加两个指向GitHub服务器的A记录，如下图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-添加指向github二级域名的CNAME记录，如下图"><span class="nav-number">3.0.2.</span> <span class="nav-text">b.添加指向github二级域名的CNAME记录，如下图</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-使用自定义域名直接访问HEXO博客"><span class="nav-number">4.</span> <span class="nav-text">4.使用自定义域名直接访问HEXO博客</span></a></li></ol></div>
+              <p class="post-toc-empty">此文章未包含目录</p>
             
           </div>
         </section>
