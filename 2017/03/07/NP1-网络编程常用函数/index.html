@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="apue," />
+  <meta name="keywords" content="网络编程," />
 
 
 
@@ -84,18 +84,16 @@
 
 
 
-<meta name="description" content="《Advanced Programming in the UNIX Environment》第三章——文件IO课后习题答案">
+<meta name="description" content="1.套接字地址结构1.1 IPv4套接字地址结构#include struct in_addr {in_addr_t s_addr;    //32-bit IPv4 address};struct sockaddr_in {uint8_t sin_len;    //length of strcut(16)sa_family_t sin_family;    //AF_INETin_port_t">
 <meta property="og:type" content="article">
-<meta property="og:title" content="apue chapter3 Files IO">
-<meta property="og:url" content="http://yoursite.com/2016/08/29/apue-chapter3-Files-IO/index.html">
+<meta property="og:title" content="[NP1]网络编程常用函数">
+<meta property="og:url" content="http://yoursite.com/2017/03/07/NP1-网络编程常用函数/index.html">
 <meta property="og:site_name" content="Junhan's Blog">
-<meta property="og:description" content="《Advanced Programming in the UNIX Environment》第三章——文件IO课后习题答案">
-<meta property="og:image" content="http://i2.buimg.com/567571/a2ef9282a1dda9c5.jpg">
-<meta property="og:updated_time" content="2016-08-30T12:20:24.172Z">
+<meta property="og:description" content="1.套接字地址结构1.1 IPv4套接字地址结构#include struct in_addr {in_addr_t s_addr;    //32-bit IPv4 address};struct sockaddr_in {uint8_t sin_len;    //length of strcut(16)sa_family_t sin_family;    //AF_INETin_port_t">
+<meta property="og:updated_time" content="2017-03-07T15:39:53.631Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="apue chapter3 Files IO">
-<meta name="twitter:description" content="《Advanced Programming in the UNIX Environment》第三章——文件IO课后习题答案">
-<meta name="twitter:image" content="http://i2.buimg.com/567571/a2ef9282a1dda9c5.jpg">
+<meta name="twitter:title" content="[NP1]网络编程常用函数">
+<meta name="twitter:description" content="1.套接字地址结构1.1 IPv4套接字地址结构#include struct in_addr {in_addr_t s_addr;    //32-bit IPv4 address};struct sockaddr_in {uint8_t sin_len;    //length of strcut(16)sa_family_t sin_family;    //AF_INETin_port_t">
 
 
 
@@ -116,9 +114,9 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/08/29/apue-chapter3-Files-IO/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/03/07/NP1-网络编程常用函数/"/>
 
-  <title> apue chapter3 Files IO | Junhan's Blog </title>
+  <title> [NP1]网络编程常用函数 | Junhan's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -261,7 +259,7 @@
             
             
               
-                apue chapter3 Files IO
+                [NP1]网络编程常用函数
               
             
           </h1>
@@ -273,8 +271,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-08-29T15:50:47+08:00" content="2016-08-29">
-              2016-08-29
+            <time itemprop="dateCreated" datetime="2017-03-07T23:33:54+08:00" content="2017-03-07">
+              2017-03-07
             </time>
           </span>
 
@@ -284,8 +282,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/08/29/apue-chapter3-Files-IO/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/29/apue-chapter3-Files-IO/" itemprop="commentsCount"></span>
+                <a href="/2017/03/07/NP1-网络编程常用函数/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/07/NP1-网络编程常用函数/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -308,21 +306,27 @@
       
 
       
-        <p>《Advanced Programming in the UNIX Environment》第三章——文件IO课后习题答案</p>
-<a id="more"></a>
-<h2 id="Exercise3-2"><a href="#Exercise3-2" class="headerlink" title="Exercise3.2"></a>Exercise3.2</h2><p>编写一个同3.12节中的dup2功能相同的函数，要求不调用fcntl函数并且要有正确的出错处理。<br><strong>思路：递归调用dup</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ourhdr.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup_2</span><span class="params">(<span class="keyword">int</span>, <span class="keyword">int</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="comment">//dup_2(1,10);</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* if success</span></div><div class="line"> *      return the filedes</div><div class="line"> * else</div><div class="line"> *      return -1</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup_2</span><span class="params">(<span class="keyword">int</span> filedes, <span class="keyword">int</span> filedes2)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> (filedes2 &lt; <span class="number">0</span>) <span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (filedes == filedes2) <span class="keyword">return</span> filedes2;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (close(filedes2) == <span class="number">-1</span>) <span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line"></div><div class="line">    <span class="keyword">int</span> newfd;</div><div class="line">    <span class="keyword">if</span> ((newfd = dup(filedes)) == filedes2) <span class="keyword">return</span> filedes;</div><div class="line">    <span class="keyword">else</span></div><div class="line">    &#123;</div><div class="line">        dup_2(filedes, filedes2);</div><div class="line">        close(newfd);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> filedes2;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+        <h3 id="1-套接字地址结构"><a href="#1-套接字地址结构" class="headerlink" title="1.套接字地址结构"></a>1.套接字地址结构</h3><h4 id="1-1-IPv4套接字地址结构"><a href="#1-1-IPv4套接字地址结构" class="headerlink" title="1.1 IPv4套接字地址结构"></a>1.1 IPv4套接字地址结构</h4><p>#include <netinet in.h=""><br>struct in_addr {<br>in_addr_t s_addr;    //32-bit IPv4 address<br>};<br>struct sockaddr_in {<br>uint8_t sin_len;    //length of strcut(16)<br>sa_family_t sin_family;    //AF_INET<br>in_port_t sin_port;<br>struct in_addr sin_addr;</netinet></p>
+<p>char sin_zero[8]; //unused<br>}</p>
+<h4 id="1-2-通用套接字地址结构"><a href="#1-2-通用套接字地址结构" class="headerlink" title="1.2 通用套接字地址结构"></a>1.2 通用套接字地址结构</h4><p>#include <sys socket.h=""><br>struct sockaddr {<br>uint8_t sa_len;<br>sa_family_t sa_family;<br>char sa_data[14];    //protocol-specific address<br>};</sys></p>
+<h4 id="1-3-IPv6套接字地址结构"><a href="#1-3-IPv6套接字地址结构" class="headerlink" title="1.3 IPv6套接字地址结构"></a>1.3 IPv6套接字地址结构</h4><p>#include <netinet in.h=""><br>struct in6_addr {<br>uint8_t s6_addr[16];    //128-bit IPv6 address<br>};</netinet></p>
+<p>#define SIN6_LEN<br>struct sockaddr_in6 {<br>uint8_t sin6_len;    //length of strcut(28)<br>sa_family_t sin6_family;    //AF_INET6<br>in_port_t sin6_port;</p>
+<p>uint32_t sin6_flowinfo;<br>strcut in6_addr sin6_addr;</p>
+<p>uint32_t sin6_scope_id;<br>};</p>
+<h4 id="1-4-新的通用套接字地址结构"><a href="#1-4-新的通用套接字地址结构" class="headerlink" title="1.4 新的通用套接字地址结构"></a>1.4 新的通用套接字地址结构</h4><p>#include <netinet in.h=""><br>struct sockaddr_storage {<br>uint8_t ss_len;<br>sa_family_t family;<br>};</netinet></p>
 <hr>
-<h2 id="Exercise3-3"><a href="#Exercise3-3" class="headerlink" title="Exercise3.3"></a>Exercise3.3</h2><p>假设一个进程执行下面的3个函数调用：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">fd1 = open(pathname, oflags);</div><div class="line">fd2 = dup(fd1);</div><div class="line">fd3 = open(pathname, oflags);</div></pre></td></tr></table></figure></p>
-<p>画出结果图（见图3-3）。对fcntl作用于fd1来说，F_SETFD命令会影响哪一个文件描述符？FSETFL呢？<br><strong>Ans</strong><br>每次调用open函数就分配一个文件表项，如果两次打开的是相同的文件，则两个文件表项指向相同的v节点。调用dup引用已存在的文件表项（此处指fd1的文件表项），见图C-1。当F_SETFD作用于fd1时，只影响fd1的文件描述符标志；F_SETFL作用于fd1时，则影响fd1及fd2的文件描述符标志。<br><img src="http://i2.buimg.com/567571/a2ef9282a1dda9c5.jpg" alt="图C-1"></p>
-<blockquote>
-<p><strong>F_SETFL</strong> 将文件状态标志设置为第三个参数的值。(取为整型值)<br><strong>F_SETFD</strong> 对于filedes 设置文件描述符标志。</p>
-</blockquote>
+<h3 id="2-字节排序函数"><a href="#2-字节排序函数" class="headerlink" title="2. 字节排序函数"></a>2. 字节排序函数</h3><p>#include <netinet in.h=""><br>//返回网络字节序<br>uint16_t htons(uint16_t host16bitvalue);<br>uint32_t htonl(uint32_t host32bitvalue);<br>//返回主机字节序<br>uint16_t ntohs(uint16_t net16bitvalue);<br>uint32_t ntohl(uint32_t net32bitvalue);</netinet></p>
+<p>以上h指host，n指net，s指short，l指long</p>
 <hr>
-<h2 id="Exercise3-4"><a href="#Exercise3-4" class="headerlink" title="Exercise3.4"></a>Exercise3.4</h2><p>在许多程序中都包含下面一段代码：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">dup2(fd, <span class="number">0</span>);  </div><div class="line">dup2(fd, <span class="number">1</span>);  </div><div class="line">dup2(fd, <span class="number">2</span>);  </div><div class="line"><span class="keyword">if</span> (fd &gt; <span class="number">2</span>)  </div><div class="line">    close(fd);</div></pre></td></tr></table></figure></p>
-<p>为了说明if语句的必要性，假设fd是1，画出每次调用dup2时3个描述符项及相应的文件表项的变化情况。然后再画出fd为3的情况。<br><strong>Ans</strong><br>如果fd是1，执行dup2(fd，1)后返回1，但是没有关闭描述符1（见3 .12节）。调用3次dup2后，3个描述符指向相同的文件表项，所以不需要关闭描述符。如果fd是3，调用3次dup2后，有4个描述符指向相同的文件表项，所以需要关闭描述符3。<br>事实上，0、1、2分别表示标准输入，标准输出，标准错误输出，一般是不关闭的。而当<code>fd &gt; 2</code>时，表示其余的文件描述符，一般而言需要关闭。</p>
+<h3 id="3-字节操纵函数"><a href="#3-字节操纵函数" class="headerlink" title="3. 字节操纵函数"></a>3. 字节操纵函数</h3><p>#include <string.h><br>void bzero(void <em>dest, size_t nbytes);<br>void copy(const void </em>src, const void <em>ptr2, size_t nbytes);<br>int bcmp(const void </em>ptr1, const void *ptr2, size_t nbytes);    //相等返回0</string.h></p>
 <hr>
-<h2 id="Exercise3-5"><a href="#Exercise3-5" class="headerlink" title="Exercise3.5"></a>Exercise3.5</h2><p>在Bourne shell和KornShell中，digit1&gt;&amp;digit2表示要将描述符digit1重定向至描述符digit2的同一文件。请说明下面两条命令的区别。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">a.out &gt; outfile 2&gt;&amp;1</div><div class="line">a.out 2&gt;&amp;1 &gt; outfile</div></pre></td></tr></table></figure></p>
-<p>（提示：shell从左到右处理命令行。）<br><strong>Ans</strong><br>shell从左到右处理命令行,所以<br><code>a.out &gt; outfile 2&gt;&amp;1</code><br>首先设置标准输出到outfile，然后执行dups将标准输出复制到描述符2（标准错误）上，其结果是将标准输出和标准错误设置为相同的文件，即描述符1和2指向相同的文件表项。而对于命令行<br><code>a.out 2 &gt;&amp;1 &gt;outfile</code><br>由于首先执行dups，所以描述符2成为终端（假设命令是交互执行的），标准输出重定向到outfile。结果是描述符1指向outfile的文件表项，描述符2指向终端的文件表项。</p>
+<h3 id="4-地址转换函数"><a href="#4-地址转换函数" class="headerlink" title="4.地址转换函数"></a>4.地址转换函数</h3><h4 id="4-1-IPv4地址转换"><a href="#4-1-IPv4地址转换" class="headerlink" title="4.1 IPv4地址转换"></a>4.1 IPv4地址转换</h4><p>#include <arpa inet.h=""><br>int inet_aton(const char <em>strptr, struct in_addr </em>addrptr);    //字符有效返回1，否则0<br>//有效32-bit二进制网络字节序IPv4地址，否则为INADDR_NONE<br>in_addr_t inet_addr(const chat <em>strptr);<br>char </em>inet_ntoa(struct in_addr inaddr);    //返回点分十进制字符串</arpa></p>
+<p>以上a指address，n指net，上述只适用于IPv4地址转换</p>
+<h4 id="4-2-通用地址转换"><a href="#4-2-通用地址转换" class="headerlink" title="4.2 通用地址转换"></a>4.2 通用地址转换</h4><p>#include <atpa inet.h=""><br>//有效返回1，无效返回0，出错返回-1<br>int inet_pton(int family, const char strptr, void <em>addrptr);<br>//出错返回NULL<br>char </em>inet_ntop(int family, const void <em>addrptr, char </em>strptr, size_t len);<br>其中len也可指定为以下值</atpa></p>
+<p>#include <netinet in.h=""></netinet></p>
+<p>#define INET_ADDRSTRLEN 16</p>
+<p>#define INET6_ADDRSTRLEN 46</p>
+<h4 id="4-3-I-O操作函数"><a href="#4-3-I-O操作函数" class="headerlink" title="4.3 I/O操作函数"></a>4.3 I/O操作函数</h4><p>#include <unistd.h><br>//返回:读到的字节数,若已到文件尾为 0,若出错为- 1<br>ssize_t read(int filedes, void <em>buff, size_t nbytes);<br>//返回:若成功为已写的字节数,若出错为- 1<br>ssize_t write(int filedes, void </em>buff, size_t nbytes);</unistd.h></p>
 
       
     </div>
@@ -345,7 +349,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/apue/" rel="tag">#apue</a>
+            <a href="/tags/网络编程/" rel="tag">#网络编程</a>
           
         </div>
       
@@ -354,17 +358,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/08/06/Windows-10-删除内置app/" rel="next" title="Windows1 0 删除内置app">
-                <i class="fa fa-chevron-left"></i> Windows1 0 删除内置app
+              <a href="/2016/10/14/sleep函数的几种实现/" rel="next" title="sleep函数的几种实现">
+                <i class="fa fa-chevron-left"></i> sleep函数的几种实现
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/09/03/apue-chapter4-文件和目录/" rel="prev" title="apue chapter4 文件和目录">
-                apue chapter4 文件和目录 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -413,8 +413,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/08/29/apue-chapter3-Files-IO/"
-           data-title="apue chapter3 Files IO" data-url="http://yoursite.com/2016/08/29/apue-chapter3-Files-IO/">
+      <div class="ds-thread" data-thread-key="2017/03/07/NP1-网络编程常用函数/"
+           data-title="[NP1]网络编程常用函数" data-url="http://yoursite.com/2017/03/07/NP1-网络编程常用函数/">
       </div>
     
   </div>
@@ -527,7 +527,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Exercise3-2"><span class="nav-number">1.</span> <span class="nav-text">Exercise3.2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exercise3-3"><span class="nav-number">2.</span> <span class="nav-text">Exercise3.3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exercise3-4"><span class="nav-number">3.</span> <span class="nav-text">Exercise3.4</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exercise3-5"><span class="nav-number">4.</span> <span class="nav-text">Exercise3.5</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-套接字地址结构"><span class="nav-number">1.</span> <span class="nav-text">1.套接字地址结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-IPv4套接字地址结构"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 IPv4套接字地址结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-通用套接字地址结构"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 通用套接字地址结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-IPv6套接字地址结构"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 IPv6套接字地址结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-新的通用套接字地址结构"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 新的通用套接字地址结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-字节排序函数"><span class="nav-number">2.</span> <span class="nav-text">2. 字节排序函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-字节操纵函数"><span class="nav-number">3.</span> <span class="nav-text">3. 字节操纵函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-地址转换函数"><span class="nav-number">4.</span> <span class="nav-text">4.地址转换函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-IPv4地址转换"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 IPv4地址转换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-通用地址转换"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 通用地址转换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-I-O操作函数"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 I/O操作函数</span></a></li></ol></li></ol></div>
             
           </div>
         </section>

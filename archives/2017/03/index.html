@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="apue," />
+  <meta name="keywords" content="Hexo, NexT" />
 
 
 
@@ -84,18 +84,15 @@
 
 
 
-<meta name="description" content="《Advanced Programming in the UNIX Environment》第三章——文件IO课后习题答案">
-<meta property="og:type" content="article">
-<meta property="og:title" content="apue chapter3 Files IO">
-<meta property="og:url" content="http://yoursite.com/2016/08/29/apue-chapter3-Files-IO/index.html">
+<meta name="description" content="今天天气真好">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Junhan's Blog">
+<meta property="og:url" content="http://yoursite.com/archives/2017/03/index.html">
 <meta property="og:site_name" content="Junhan's Blog">
-<meta property="og:description" content="《Advanced Programming in the UNIX Environment》第三章——文件IO课后习题答案">
-<meta property="og:image" content="http://i2.buimg.com/567571/a2ef9282a1dda9c5.jpg">
-<meta property="og:updated_time" content="2016-08-30T12:20:24.172Z">
+<meta property="og:description" content="今天天气真好">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="apue chapter3 Files IO">
-<meta name="twitter:description" content="《Advanced Programming in the UNIX Environment》第三章——文件IO课后习题答案">
-<meta name="twitter:image" content="http://i2.buimg.com/567571/a2ef9282a1dda9c5.jpg">
+<meta name="twitter:title" content="Junhan's Blog">
+<meta name="twitter:description" content="今天天气真好">
 
 
 
@@ -116,9 +113,9 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/08/29/apue-chapter3-Files-IO/"/>
+  <link rel="canonical" href="http://yoursite.com/archives/2017/03/"/>
 
-  <title> apue chapter3 Files IO | Junhan's Blog </title>
+  <title> 归档 | Junhan's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -139,7 +136,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <div class="container one-collumn sidebar-position-left  page-archive  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -240,170 +237,66 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-expand">
+  <section id="posts" class="posts-collapse">
+    <span class="archive-move-on"></span>
+
+    <span class="archive-page-counter">
+      
+      
+      
+        
+      
+      Orz..! 目前共计 15 篇日志。 继续努力。
+    </span>
+
     
 
-  
-  
+      
+      
+      
 
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
+      
         
+        <div class="collection-title">
+          <h2 class="archive-year motion-element" id="archive-year-2017">2017</h2>
+        </div>
+      
+      
+
+      
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h1 class="post-title">
         
-          <h1 class="post-title" itemprop="name headline">
-            
-            
+            <a class="post-title-link" href="/2017/03/07/NP1-网络编程常用函数/" itemprop="url">
               
-                apue chapter3 Files IO
+                <span itemprop="name">[NP1]网络编程常用函数</span>
               
-            
-          </h1>
+            </a>
         
+      </h1>
 
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-08-29T15:50:47+08:00" content="2016-08-29">
-              2016-08-29
-            </time>
-          </span>
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2017-03-07T23:33:54+08:00"
+              content="2017-03-07" >
+          03-07
+        </time>
+      </div>
 
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/08/29/apue-chapter3-Files-IO/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/29/apue-chapter3-Files-IO/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        <p>《Advanced Programming in the UNIX Environment》第三章——文件IO课后习题答案</p>
-<a id="more"></a>
-<h2 id="Exercise3-2"><a href="#Exercise3-2" class="headerlink" title="Exercise3.2"></a>Exercise3.2</h2><p>编写一个同3.12节中的dup2功能相同的函数，要求不调用fcntl函数并且要有正确的出错处理。<br><strong>思路：递归调用dup</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ourhdr.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup_2</span><span class="params">(<span class="keyword">int</span>, <span class="keyword">int</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="comment">//dup_2(1,10);</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* if success</span></div><div class="line"> *      return the filedes</div><div class="line"> * else</div><div class="line"> *      return -1</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup_2</span><span class="params">(<span class="keyword">int</span> filedes, <span class="keyword">int</span> filedes2)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> (filedes2 &lt; <span class="number">0</span>) <span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (filedes == filedes2) <span class="keyword">return</span> filedes2;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (close(filedes2) == <span class="number">-1</span>) <span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line"></div><div class="line">    <span class="keyword">int</span> newfd;</div><div class="line">    <span class="keyword">if</span> ((newfd = dup(filedes)) == filedes2) <span class="keyword">return</span> filedes;</div><div class="line">    <span class="keyword">else</span></div><div class="line">    &#123;</div><div class="line">        dup_2(filedes, filedes2);</div><div class="line">        close(newfd);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> filedes2;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<hr>
-<h2 id="Exercise3-3"><a href="#Exercise3-3" class="headerlink" title="Exercise3.3"></a>Exercise3.3</h2><p>假设一个进程执行下面的3个函数调用：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">fd1 = open(pathname, oflags);</div><div class="line">fd2 = dup(fd1);</div><div class="line">fd3 = open(pathname, oflags);</div></pre></td></tr></table></figure></p>
-<p>画出结果图（见图3-3）。对fcntl作用于fd1来说，F_SETFD命令会影响哪一个文件描述符？FSETFL呢？<br><strong>Ans</strong><br>每次调用open函数就分配一个文件表项，如果两次打开的是相同的文件，则两个文件表项指向相同的v节点。调用dup引用已存在的文件表项（此处指fd1的文件表项），见图C-1。当F_SETFD作用于fd1时，只影响fd1的文件描述符标志；F_SETFL作用于fd1时，则影响fd1及fd2的文件描述符标志。<br><img src="http://i2.buimg.com/567571/a2ef9282a1dda9c5.jpg" alt="图C-1"></p>
-<blockquote>
-<p><strong>F_SETFL</strong> 将文件状态标志设置为第三个参数的值。(取为整型值)<br><strong>F_SETFD</strong> 对于filedes 设置文件描述符标志。</p>
-</blockquote>
-<hr>
-<h2 id="Exercise3-4"><a href="#Exercise3-4" class="headerlink" title="Exercise3.4"></a>Exercise3.4</h2><p>在许多程序中都包含下面一段代码：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">dup2(fd, <span class="number">0</span>);  </div><div class="line">dup2(fd, <span class="number">1</span>);  </div><div class="line">dup2(fd, <span class="number">2</span>);  </div><div class="line"><span class="keyword">if</span> (fd &gt; <span class="number">2</span>)  </div><div class="line">    close(fd);</div></pre></td></tr></table></figure></p>
-<p>为了说明if语句的必要性，假设fd是1，画出每次调用dup2时3个描述符项及相应的文件表项的变化情况。然后再画出fd为3的情况。<br><strong>Ans</strong><br>如果fd是1，执行dup2(fd，1)后返回1，但是没有关闭描述符1（见3 .12节）。调用3次dup2后，3个描述符指向相同的文件表项，所以不需要关闭描述符。如果fd是3，调用3次dup2后，有4个描述符指向相同的文件表项，所以需要关闭描述符3。<br>事实上，0、1、2分别表示标准输入，标准输出，标准错误输出，一般是不关闭的。而当<code>fd &gt; 2</code>时，表示其余的文件描述符，一般而言需要关闭。</p>
-<hr>
-<h2 id="Exercise3-5"><a href="#Exercise3-5" class="headerlink" title="Exercise3.5"></a>Exercise3.5</h2><p>在Bourne shell和KornShell中，digit1&gt;&amp;digit2表示要将描述符digit1重定向至描述符digit2的同一文件。请说明下面两条命令的区别。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">a.out &gt; outfile 2&gt;&amp;1</div><div class="line">a.out 2&gt;&amp;1 &gt; outfile</div></pre></td></tr></table></figure></p>
-<p>（提示：shell从左到右处理命令行。）<br><strong>Ans</strong><br>shell从左到右处理命令行,所以<br><code>a.out &gt; outfile 2&gt;&amp;1</code><br>首先设置标准输出到outfile，然后执行dups将标准输出复制到描述符2（标准错误）上，其结果是将标准输出和标准错误设置为相同的文件，即描述符1和2指向相同的文件表项。而对于命令行<br><code>a.out 2 &gt;&amp;1 &gt;outfile</code><br>由于首先执行dups，所以描述符2成为终端（假设命令是交互执行的），标准输出重定向到outfile。结果是描述符1指向outfile的文件表项，描述符2指向终端的文件表项。</p>
-
-      
-    </div>
-
-    <div>
-      
-        
-
-      
-    </div>
-
-    <div>
-      
-        
-
-      
-    </div>
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/apue/" rel="tag">#apue</a>
-          
-        </div>
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2016/08/06/Windows-10-删除内置app/" rel="next" title="Windows1 0 删除内置app">
-                <i class="fa fa-chevron-left"></i> Windows1 0 删除内置app
-              </a>
-            
-          </div>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/09/03/apue-chapter4-文件和目录/" rel="prev" title="apue chapter4 文件和目录">
-                apue chapter4 文件和目录 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
+    </header>
   </article>
 
 
 
-    <div class="post-spread">
-      
-        <!-- JiaThis Button BEGIN -->
-<div class="jiathis_style">
-  <a class="jiathis_button_tsina"></a>
-  <a class="jiathis_button_tqq"></a>
-  <a class="jiathis_button_weixin"></a>
-  <a class="jiathis_button_cqq"></a>
-  <a class="jiathis_button_douban"></a>
-  <a class="jiathis_button_renren"></a>
-  <a class="jiathis_button_qzone"></a>
-  <a class="jiathis_button_kaixin001"></a>
-  <a class="jiathis_button_copy"></a>
-  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
-  <a class="jiathis_counter_style"></a>
-</div>
-<script type="text/javascript" >
-  var jiathis_config={
-    hideMore:false
-  }
-</script>
-<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
-<!-- JiaThis Button END -->
+    
 
-      
-    </div>
-  </div>
+  </section>
+
+  
+
 
 
           </div>
@@ -411,14 +304,6 @@
 
 
           
-  <div class="comments" id="comments">
-    
-      <div class="ds-thread" data-thread-key="2016/08/29/apue-chapter3-Files-IO/"
-           data-title="apue chapter3 Files IO" data-url="http://yoursite.com/2016/08/29/apue-chapter3-Files-IO/">
-      </div>
-    
-  </div>
-
 
         </div>
         
@@ -438,17 +323,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel ">
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/uploads/avatar.png"
@@ -520,17 +396,6 @@
 
       </section>
 
-      
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-            
-              
-            
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Exercise3-2"><span class="nav-number">1.</span> <span class="nav-text">Exercise3.2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exercise3-3"><span class="nav-number">2.</span> <span class="nav-text">Exercise3.3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exercise3-4"><span class="nav-number">3.</span> <span class="nav-text">Exercise3.4</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exercise3-5"><span class="nav-number">4.</span> <span class="nav-text">Exercise3.5</span></a></li></ol></div>
-            
-          </div>
-        </section>
       
 
     </div>
@@ -634,9 +499,11 @@
 
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
-
+  
+    <script type="text/javascript" id="motion.page.archive">
+      $('.archive-year').velocity('transition.slideLeftIn');
+    </script>
+  
 
 
   
