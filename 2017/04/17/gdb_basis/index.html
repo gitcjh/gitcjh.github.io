@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="gdb," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="0 gdb介绍调试器GDB允许查看在执行一个程序时其内部时发生了什么，或者是程序奔溃(crashed)时它正在做什么。gdb通过以下四种事情来捕获某个行为的异常错误(bug)：
+
+运行程序，指定可能影响其动作的内容。
+让程序在指定的情况下停止。
+检查当程序停止时发生了什么。
+改变程序中的内容，以便于更正一个错误，然后继续寻找下一个错误。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GDB调试工具入门">
+<meta property="og:url" content="http://yoursite.com/2017/04/17/gdb_basis/index.html">
+<meta property="og:site_name" content="Junhan's Blog">
+<meta property="og:description" content="0 gdb介绍调试器GDB允许查看在执行一个程序时其内部时发生了什么，或者是程序奔溃(crashed)时它正在做什么。gdb通过以下四种事情来捕获某个行为的异常错误(bug)：
+
+运行程序，指定可能影响其动作的内容。
+让程序在指定的情况下停止。
+检查当程序停止时发生了什么。
+改变程序中的内容，以便于更正一个错误，然后继续寻找下一个错误。">
+<meta property="og:updated_time" content="2017-07-09T15:46:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GDB调试工具入门">
+<meta name="twitter:description" content="0 gdb介绍调试器GDB允许查看在执行一个程序时其内部时发生了什么，或者是程序奔溃(crashed)时它正在做什么。gdb通过以下四种事情来捕获某个行为的异常错误(bug)：
+
+运行程序，指定可能影响其动作的内容。
+让程序在指定的情况下停止。
+检查当程序停止时发生了什么。
+改变程序中的内容，以便于更正一个错误，然后继续寻找下一个错误。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    tabs: ,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/04/17/gdb_basis/"/>
+
+
+
+
+
+  <title>GDB调试工具入门 | Junhan's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?654b28b71373f0c4e0481699cb1a30e0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Junhan's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">种一棵树最好的时间是十年前，其次是现在。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/17/gdb_basis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Stranger">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Junhan's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">GDB调试工具入门</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-17T12:47:51+08:00">
+                2017-04-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux编程/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/04/17/gdb_basis/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/04/17/gdb_basis/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/04/17/gdb_basis/" class="leancloud_visitors" data-flag-title="GDB调试工具入门">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                  <span class="post-meta-divider">|</span>
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  2,951
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  13
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="0-gdb介绍"><a href="#0-gdb介绍" class="headerlink" title="0 gdb介绍"></a>0 gdb介绍</h2><p>调试器GDB允许查看在执行一个程序时其内部时发生了什么，或者是程序奔溃(crashed)时它正在做什么。<br>gdb通过以下四种事情来捕获某个行为的异常错误(bug)：</p>
+<ul>
+<li>运行程序，指定可能影响其动作的内容。</li>
+<li>让程序在指定的情况下停止。</li>
+<li>检查当程序停止时发生了什么。</li>
+<li>改变程序中的内容，以便于更正一个错误，然后继续寻找下一个错误。<a id="more"></a>
+gdb可用于调试C，C++，Fortran，Modula-2。<br>gdb通过在终端执行<code>gdb</code>命令激活。一旦启动，他从命令行读取命令，直到使用<code>quit</code>命令让它退出。也可以通过使用<code>help command</code>命令获取在线帮助。<br>gdb可以使用无参或者带参无选项执行，不过一般都使用带参的命令，例如：指定一个程序或者指定core文件：<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">gdb program	<span class="comment">#指定一个可执行程序</span></div><div class="line">gdb program core	<span class="comment">#指定一个可执行程序以及core文件</span></div><div class="line">gdb program pid	<span class="comment">#指定一个正在运行的程序</span></div><div class="line">gdb -p pid	<span class="comment">#同上</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="1-gdb常用命令"><a href="#1-gdb常用命令" class="headerlink" title="1 gdb常用命令"></a>1 gdb常用命令</h2><h4 id="1-1-list"><a href="#1-1-list" class="headerlink" title="1.1 list"></a>1.1 list</h4><p>list命令用于查看代码，可简写为l。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">list	<span class="comment">#查看上一次list中心附近的10行代码，-5～+5</span></div><div class="line">list n	<span class="comment">#查看第n行附近10行代码，n-5～n+5</span></div><div class="line">list b,e	<span class="comment">#查看b,e行范围的代码</span></div><div class="line">list function	<span class="comment">#查看函数function附近的代码</span></div><div class="line">list file:line	<span class="comment">#查看文件file第line行附件的代码</span></div><div class="line">list file:function	<span class="comment">#查看文件file的函数function附近的代码</span></div><div class="line">list *address	<span class="comment">#地址为address的行附近的代码，使用info add name获取地址</span></div></pre></td></tr></table></figure></p>
+<h4 id="1-2-break"><a href="#1-2-break" class="headerlink" title="1.2 break"></a>1.2 break</h4><p>break命令用于设置断点，可用b简化；delete用于删除断点，可用d简化。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">break</span> n	<span class="comment">#在第n行设置断点</span></div><div class="line"><span class="keyword">break</span> function	<span class="comment">#在函数function设置断点，可以是库函数</span></div><div class="line"><span class="keyword">break</span> file:line	<span class="comment">#在文件file第line行设置断点</span></div><div class="line"><span class="keyword">break</span> file:function	<span class="comment">#在文件file的function函数设置断点</span></div><div class="line"><span class="keyword">break</span> n <span class="keyword">if</span> condition	<span class="comment">#根据条件在第n行设置断点，例如b 16 if i==10</span></div><div class="line"><span class="keyword">break</span> *address	<span class="comment">#在地址为address的行设置断点</span></div></pre></td></tr></table></figure></p>
+<h4 id="1-3-delete和clear"><a href="#1-3-delete和clear" class="headerlink" title="1.3 delete和clear"></a>1.3 delete和clear</h4><p>每次使用break设置断点都会分配一个断点号，例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">(gdb) b 16</div><div class="line">Breakpoint 1 at 0x400512: file test.cc, line 16.</div><div class="line">(gdb) b 17</div><div class="line">Breakpoint 2 at 0x40051b: file test.cc, line 17.</div></pre></td></tr></table></figure></p>
+<p>要删除断点使用可以使用<code>delete</code>命令：<br><figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">delete</span> [breakpoints num] [range...]</div><div class="line"><span class="keyword">delete</span> n	<span class="comment">#删除n号断点</span></div><div class="line"><span class="keyword">delete</span> <span class="keyword">m</span>-n	<span class="comment">#删除m-n号断点</span></div></pre></td></tr></table></figure></p>
+<p>也可以使用<code>clear</code>命令，clear是<strong>基于行</strong>的，不是删除所有断点：<br><figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">clear n	<span class="comment">#删除n行的所有断点</span></div><div class="line">clear function	<span class="comment">#删除函数function的断点</span></div><div class="line">clear file:line	<span class="comment">#删除文件file第n行的所有断点</span></div><div class="line">clear file:function	<span class="comment">#删除文件:函数的所有断点</span></div></pre></td></tr></table></figure></p>
+<h4 id="1-4-查看变量"><a href="#1-4-查看变量" class="headerlink" title="1.4 查看变量"></a>1.4 查看变量</h4><ol>
+<li><p><code>print</code>命令<br>print命令用来在调试程序时查看变量值，可简化为p。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">print</span> var	<span class="comment">#打印var的值</span></div><div class="line"><span class="keyword">print</span> *array@len	<span class="comment">#以&#123;a, b, ...&#125;格式打印动态数组</span></div><div class="line"><span class="keyword">print</span> array	<span class="comment">#以&#123;a, b, ...&#125;格式打印静态数组</span></div><div class="line"><span class="keyword">print</span> file::var <span class="keyword">or</span> <span class="keyword">print</span> function::var	<span class="comment">#打印全局变量</span></div><div class="line"><span class="comment">#指定输出格式：</span></div><div class="line"><span class="keyword">print</span>/u[d|o|x...] ...	<span class="comment">#作为无符号数输出</span></div><div class="line"><span class="keyword">print</span>/t ...	<span class="comment">#二进制输出</span></div><div class="line"><span class="keyword">print</span>/d ...	<span class="comment">#十进制输出</span></div><div class="line"><span class="keyword">print</span>/o ...	<span class="comment">#八进制输出</span></div><div class="line"><span class="keyword">print</span>/x ...	<span class="comment">#十六进制输出</span></div><div class="line"><span class="keyword">print</span>/a ...	<span class="comment">#十六进制输出</span></div><div class="line"><span class="keyword">print</span>/c ...	<span class="comment">#字符输出</span></div><div class="line"><span class="keyword">print</span>/f ...	<span class="comment">#浮点数输出</span></div></pre></td></tr></table></figure>
+</li>
+<li><p><code>display</code>命令</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">display var	<span class="comment">#每次执行到断点都打印var的值</span></div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="1-5-程序执行时命令"><a href="#1-5-程序执行时命令" class="headerlink" title="1.5 程序执行时命令"></a>1.5 程序执行时命令</h4><ol>
+<li><p><code>run</code>命令<br>run命令用来开始执行程序，直到第一个断点停止程序。可简写为r。例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">(gdb) <span class="keyword">break</span> <span class="number">20</span></div><div class="line">Breakpoint <span class="number">1</span> at <span class="number">0x40056d</span>: file test.cc, line <span class="number">20.</span></div><div class="line">(gdb) run</div><div class="line">Starting program: /home/chenjunhan/Learning/gdb/test Breakpoint <span class="number">1</span>, main () at test.cc:<span class="number">20</span></div></pre></td></tr></table></figure>
+</li>
+<li><p><code>continue</code>命令<br>continue命令用来从上次断点停止之后开始继续执行程序，直到下一个断点。可简写为c。例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">(gdb) b <span class="number">15</span></div><div class="line">Breakpoint <span class="number">1</span> at <span class="number">0x40050b</span>: file test.cc, line <span class="number">15.</span></div><div class="line">(gdb) b <span class="number">16</span></div><div class="line">Breakpoint <span class="number">2</span> at <span class="number">0x400512</span>: file test.cc, line <span class="number">16.</span></div><div class="line">(gdb) r</div><div class="line">Starting program: /home/chenjunhan/Learning/gdb/test</div><div class="line">Breakpoint <span class="number">1</span>, main () at test.cc:<span class="number">15</span></div><div class="line">(gdb) <span class="keyword">continue</span></div><div class="line">Continuing.</div><div class="line">Breakpoint <span class="number">2</span>, main () at test.cc:<span class="number">16</span></div></pre></td></tr></table></figure>
+</li>
+<li><p><code>next</code>命令<br>next命令用于执行一行源程序代码，此行代码中的函数调用也一并执行；即“step over”，可简写为n。</p>
+</li>
+<li><code>step</code>命令<br>step命令用于执行一行源程序代码，如果此行代码中有函数调用，则进入该函数；即“step into”，可简写为s。</li>
+</ol>
+<h2 id="2-gdb调试函数"><a href="#2-gdb调试函数" class="headerlink" title="2 gdb调试函数"></a>2 gdb调试函数</h2><ul>
+<li><p>列出可执行函数所有函数名称</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">info|i functions</div></pre></td></tr></table></figure>
+</li>
+<li><p>执行函数内容</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">next|n	<span class="comment">#不进入函数，直接执行函数并返回</span></div><div class="line">step|s	<span class="comment">#进入函数，执行函数体</span></div><div class="line">call|<span class="keyword">print</span> function	<span class="comment">#任意位置直接执行函数</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>退出函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">finish	<span class="comment">#退出正在执行的函数，自动执行剩下的代码</span></div><div class="line"><span class="keyword">return</span> [expression]	<span class="comment">#退出正在执行的函数，后面的代码不执行，可以通过expression修改函数返回值</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>函数堆栈帧</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">info|i frame	<span class="comment">#显示当前函数堆栈帧信息，包括指令寄存器的值，局部变量地址及值等信息。</span></div><div class="line">backtrace|bt	<span class="comment">#显示堆栈帧层次结构</span></div><div class="line">frame n|address	<span class="comment">#切换函数堆栈帧层次</span></div><div class="line">up|down n	<span class="comment">#向上/下选择n层函数堆栈帧</span></div><div class="line">up-silently|down-silently n	<span class="comment">#同上，不过不打印信息</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="3-gdb设置watchpoint"><a href="#3-gdb设置watchpoint" class="headerlink" title="3 gdb设置watchpoint"></a>3 gdb设置watchpoint</h2><p>gdb可以使用<code>watch</code>命令设置观察点，也就是当一个变量值发生变化时，程序会停下来。例如：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> a = <span class="number">0</span>;</div><div class="line"><span class="function"><span class="keyword">void</span> *<span class="title">pthread_func</span><span class="params">(<span class="keyword">void</span> *args)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</div><div class="line">    &#123;</div><div class="line">        ++a;</div><div class="line">        sleep(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">pthread_t</span> tid;</div><div class="line">    pthread_create(&amp;tid, <span class="literal">NULL</span>, pthread_func, <span class="literal">NULL</span>);</div><div class="line">    sleep(<span class="number">1000</span>);</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>使用<code>watch|wa</code>观察全局变量a:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">(gdb) file catch</div><div class="line">Reading symbols <span class="keyword">from</span> catch...done.</div><div class="line">(gdb) <span class="keyword">break</span> pthread_func</div><div class="line">Breakpoint <span class="number">1</span> at <span class="number">0x400659</span>: file catch.c, line <span class="number">11.</span></div><div class="line">(gdb) watch a</div><div class="line">Hardware watchpoint <span class="number">2</span>: a</div><div class="line">(gdb) r</div><div class="line">Starting program: /home/chenjunhan/Learning/gdb/catch </div><div class="line">[Thread debugging using libthread_db enabled]</div><div class="line">Using host libthread_db library <span class="string">"/lib/x86_64-linux-gnu/libthread_db.so.1"</span>.</div><div class="line">[New Thread <span class="number">0x7ffff77f6700</span> (LWP <span class="number">6578</span>)]</div><div class="line">[Switching to Thread <span class="number">0x7ffff77f6700</span> (LWP <span class="number">6578</span>)]</div><div class="line"></div><div class="line">Breakpoint <span class="number">1</span>, pthread_func (args=<span class="number">0x0</span>) at catch.c:<span class="number">11</span></div><div class="line"><span class="number">11</span>	        ++a;</div><div class="line">(gdb) <span class="keyword">continue</span></div><div class="line">Continuing.</div><div class="line">Hardware watchpoint <span class="number">2</span>: a</div><div class="line"></div><div class="line">Old value = <span class="number">0</span></div><div class="line">New value = <span class="number">1</span></div><div class="line">pthread_func (args=<span class="number">0x0</span>) at catch.c:<span class="number">12</span></div><div class="line"><span class="number">12</span>	        sleep(<span class="number">1</span>);</div><div class="line">(gdb) <span class="keyword">continue</span></div><div class="line">Continuing.</div><div class="line"></div><div class="line">Breakpoint <span class="number">1</span>, pthread_func (args=<span class="number">0x0</span>) at catch.c:<span class="number">11</span></div><div class="line"><span class="number">11</span>	        ++a;</div></pre></td></tr></table></figure></p>
+<ul>
+<li><p>设置观察点</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">watch var	<span class="comment">#为var设置观察点，在run之前</span></div><div class="line">watch *(type*)(address)	<span class="comment">#为地址address指向的变量设置观察点</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>列出所有观察点</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">info watchpoints</div></pre></td></tr></table></figure>
+</li>
+<li><p>断点控制命令</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">disable|enable|delete n</div></pre></td></tr></table></figure>
+</li>
+<li><p>为watch指定生效线程</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">info threads	<span class="comment">#列出所有threads编号等信息，thread_create之后</span></div><div class="line">watch var thread t_num	<span class="comment">#只有编号为t_num的thread修改了var值才会停下来</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>只读/读写观察点，只对硬件观察点才生效</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">rwatch|rw var	<span class="comment">#设置只读观察点每次访问var都会停下来</span></div><div class="line">wwatch|aw var	<span class="comment">#设置读写观察点，当发生读取或改变变量值的行为时，程序就会暂停住</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="4-gdb设置catchpoint"><a href="#4-gdb设置catchpoint" class="headerlink" title="4 gdb设置catchpoint"></a>4 gdb设置catchpoint</h2><p>使用gdb调试程序时，可以用<code>tcatch</code>命令设置catchpoint只触发一次。例如：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">pid_t</span> pid;</div><div class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>;i &lt; <span class="number">4</span>; ++i)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">if</span> ((pid = fork()) &lt; <span class="number">0</span>) <span class="comment">//fork error</span></div><div class="line">            <span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (pid == <span class="number">0</span>)  <span class="comment">//child</span></div><div class="line">            <span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Hello World\n"</span>);<span class="comment">//parent</span></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>使用<code>tcatch fork</code>为fork设置catchpoint<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">(gdb) tcatch fork</div><div class="line">Catchpoint <span class="number">1</span> (fork)</div><div class="line">(gdb) r</div><div class="line">Starting program: /home/chenjunhan/Learning/gdb/catch </div><div class="line"></div><div class="line">Temporary catchpoint <span class="number">1</span> (forked process <span class="number">6838</span>), <span class="number">0x00007ffff7ad5ee4</span> <span class="keyword">in</span> __libc_fork</div><div class="line">    () at ../nptl/sysdeps/unix/sysv/linux/x86_64/../fork.c:<span class="number">130</span></div><div class="line"><span class="number">130</span>	../nptl/sysdeps/unix/sysv/linux/x86_64/../fork.c: 没有那个文件或目录.</div><div class="line">(gdb) c</div><div class="line">Continuing.</div><div class="line">Hello World</div><div class="line">[Inferior <span class="number">1</span> (process <span class="number">6834</span>) exited normally]</div></pre></td></tr></table></figure></p>
+<ul>
+<li><p>为fork/vfork/exec设置catchpoint</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">catch fork</div><div class="line">catch vfork</div><div class="line">catch <span class="keyword">exec</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>为系统调用设置catchpoint</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">catch syscall [syscall_name|syscall_num]	<span class="comment">#例如catch syscall mmap</span></div><div class="line">catch syscall	<span class="comment">#为所有系统调用设置catchpoint</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="5-gdb高级打印技巧"><a href="#5-gdb高级打印技巧" class="headerlink" title="5 gdb高级打印技巧"></a>5 gdb高级打印技巧</h2><h4 id="5-1-打印局部变量"><a href="#5-1-打印局部变量" class="headerlink" title="5.1 打印局部变量"></a>5.1 打印局部变量</h4><ul>
+<li><p>使用<code>backtrace full</code>命令</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">(gdb) bt full</div><div class="line"><span class="comment">#0  fun_a () at a.c:6</span></div><div class="line">        a = <span class="number">0</span></div><div class="line"><span class="comment">#1  0x000109b0 in fun_b () at a.c:12</span></div><div class="line">        b = <span class="number">1</span></div><div class="line"><span class="comment">#2  0x000109e4 in fun_c () at a.c:19</span></div><div class="line">        c = <span class="number">2</span></div><div class="line"><span class="comment">#3  0x00010a18 in fun_d () at a.c:26</span></div><div class="line">        d = <span class="number">3</span></div><div class="line"><span class="comment">#4  0x00010a4c in main () at a.c:33</span></div><div class="line">        var = <span class="number">-1</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>使用<code>info locals</code>命令，打印当前函数局部变量</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">(gdb) info locals</div><div class="line">a = <span class="number">0</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="5-2-打印打印进程内存信息"><a href="#5-2-打印打印进程内存信息" class="headerlink" title="5.2 打印打印进程内存信息"></a>5.2 打印打印进程内存信息</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">info proc mappings	<span class="comment">#查看内存映像信息</span></div><div class="line">info files	<span class="comment">#更详细地输出进程的内存信息，包括引用的动态链接库等</span></div><div class="line">info target	<span class="comment">#功能同上</span></div></pre></td></tr></table></figure>
+<h4 id="5-3-打印变量类型"><a href="#5-3-打印变量类型" class="headerlink" title="5.3 打印变量类型"></a>5.3 打印变量类型</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="keyword">student_t</span>&#123;</div><div class="line">	<span class="keyword">char</span> *name;</div><div class="line">	<span class="keyword">int</span> age;</div><div class="line">&#125; student;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    student s;</div><div class="line">    student *ps;</div><div class="line"></div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用<code>wathis</code>和<code>ptype</code>命令调试，ptype可以列出详细的类型。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">(gdb) whatis s</div><div class="line">type = student</div><div class="line">(gdb) whatis ps</div><div class="line">type = student *</div><div class="line">(gdb) ptype s</div><div class="line">type = struct student_t &#123;</div><div class="line">    char *name;</div><div class="line">    int age;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="5-4-打印变量所在文件"><a href="#5-4-打印变量所在文件" class="headerlink" title="5.4 打印变量所在文件"></a>5.4 打印变量所在文件</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">info variables var</div></pre></td></tr></table></figure>
+<h2 id="6-gdb应用于多进程-线程"><a href="#6-gdb应用于多进程-线程" class="headerlink" title="6 gdb应用于多进程/线程"></a>6 gdb应用于多进程/线程</h2><h3 id="6-1-多进程调试"><a href="#6-1-多进程调试" class="headerlink" title="6.1 多进程调试"></a>6.1 多进程调试</h3><h5 id="a-调试正在运行的进程"><a href="#a-调试正在运行的进程" class="headerlink" title="a.调试正在运行的进程"></a>a.调试正在运行的进程</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#没启动gdb</span></div><div class="line">ps -a | grep program	<span class="comment">#查看进程id</span></div><div class="line">gdb program pid	<span class="comment">#调试</span></div><div class="line">gdb --pid pid	<span class="comment">#同上</span></div><div class="line"></div><div class="line"><span class="comment">#启动gdb</span></div><div class="line">attach pid</div><div class="line"></div><div class="line"><span class="comment">#断开</span></div><div class="line">detach</div></pre></td></tr></table></figure>
+<h5 id="b-调试子进程"><a href="#b-调试子进程" class="headerlink" title="b.调试子进程"></a>b.调试子进程</h5><p>gdb调试默认追踪父进程，要追踪子进程，则执行下列命令：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">set follow-fork-mode child</div></pre></td></tr></table></figure></p>
+<h5 id="c-同时调试父进程和子进程"><a href="#c-同时调试父进程和子进程" class="headerlink" title="c.同时调试父进程和子进程"></a>c.同时调试父进程和子进程</h5><p>gdb调试时，默认追踪一个进程，使用下列命令可以同时调试多个进程：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">set detach-on-fork off	<span class="comment">#默认运行父进程，挂起其他进程</span></div><div class="line">set schedule-multiple on	<span class="comment">#父进程，子进程一起运行</span></div></pre></td></tr></table></figure></p>
+<p>之后gdb默认追踪父进程，其他进程被挂起，使用下列命令可以切换进程：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">inferior infno	<span class="comment">#切换到子进程</span></div><div class="line"></div><div class="line">info inferior	<span class="comment">#打印所有进程信息</span></div><div class="line">inferior n	<span class="comment">#选择切换调试进程</span></div></pre></td></tr></table></figure></p>
+<h3 id="6-2-多线程调试"><a href="#6-2-多线程调试" class="headerlink" title="6.2 多线程调试"></a>6.2 多线程调试</h3><h5 id="a-显示线程信息"><a href="#a-显示线程信息" class="headerlink" title="a.显示线程信息"></a>a.显示线程信息</h5><ul>
+<li><p><code>thread|_thread</code> 查看当前线程id</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">(gdb) thread</div><div class="line">[Current thread <span class="keyword">is</span> <span class="number">1</span> (Thread <span class="number">0x7ffff7fcc740</span> (LWP <span class="number">9494</span>))]</div><div class="line">(gdb) printf <span class="string">"current thread:%d\n"</span>,$_thread</div><div class="line">current thread:<span class="number">1</span></div></pre></td></tr></table></figure>
+</li>
+<li><p><code>info threads</code> 查看所有线程信息</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">(gdb) info threads</div><div class="line">Id   Target Id         Frame</div><div class="line"><span class="number">3</span>	Thread <span class="number">0x7ffff6ff5700</span> (LWP <span class="number">9627</span>) <span class="string">"thread"</span> <span class="number">0x00007ffff78b7dfd</span> <span class="keyword">in</span> nanosleep () at ../sysdeps/unix/syscall-template.S:<span class="number">81</span></div><div class="line"><span class="number">2</span>	Thread <span class="number">0x7ffff77f6700</span> (LWP <span class="number">9626</span>) <span class="string">"thread"</span> <span class="number">0x00007ffff78b7dfd</span> <span class="keyword">in</span> nanosleep () at ../sysdeps/unix/syscall-template.S:<span class="number">81</span></div><div class="line"><span class="number">1</span>	Thread <span class="number">0x7ffff7fcc740</span> (LWP <span class="number">9622</span>) <span class="string">"thread"</span> main () at thread.cc:<span class="number">21</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="b-切换线程"><a href="#b-切换线程" class="headerlink" title="b.切换线程"></a>b.切换线程</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">thread id</div></pre></td></tr></table></figure>
+<h5 id="c-只允许一个线程执行"><a href="#c-只允许一个线程执行" class="headerlink" title="c.只允许一个线程执行"></a>c.只允许一个线程执行</h5><p>gdb调试程序时，一旦程序断住，所有线程都会停止。当调试其中一个线程时，所有线程都会开始执行。如果想调试一个线程同时其他线程停止，可用以下命令：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">set scheduler-locking on</div></pre></td></tr></table></figure></p>
+<h3 id="6-3-调试多个程序"><a href="#6-3-调试多个程序" class="headerlink" title="6.3 调试多个程序"></a>6.3 调试多个程序</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#添加一个新的调试程序。-copies指定执行多少份，默认1</span></div><div class="line">add-inferior [-copies n] [-<span class="keyword">exec</span> program]</div><div class="line"></div><div class="line"><span class="comment">#复制添加一个新的调试程序，infno表示调试进程编号，默认为当前inferior</span></div><div class="line">clone-inferior [-copies -n] [infno]</div><div class="line"></div><div class="line">info inferior	<span class="comment">#列出所有调试的进程</span></div><div class="line">maint info program-spaces	<span class="comment">#列出所有调试的进程名称，inferior编号，进程id</span></div><div class="line"></div><div class="line">inferior n	<span class="comment">#切换进程</span></div></pre></td></tr></table></figure>
+<h2 id="7-gdb分析core-dump"><a href="#7-gdb分析core-dump" class="headerlink" title="7 gdb分析core dump"></a>7 gdb分析core dump</h2><h3 id="7-1-core文件"><a href="#7-1-core文件" class="headerlink" title="7.1 core文件"></a>7.1 core文件</h3><p>程序由于各种异常或者bug导致在运行过程中异常退出或者中止，并且在满足一定条件下（这里为什么说需要满足一定的条件呢？下面会分析）会产生一个叫做core的文件。<br>通常情况下，core文件会包含了程序运行时的内存，寄存器状态，堆栈指针，内存管理信息还有各种函数调用堆栈信息等，我们可以理解为是程序工作当前状态存储生成第一个文件，许多的程序出错的时候都会产生一个core文件，通过工具分析这个文件，我们可以定位到程序异常退出的时候对应的堆栈调用等信息，找出问题所在并进行及时解决。<br>ubuntu默认不生成core文件，可用一下命令解决：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ulimit -c unlimited</div></pre></td></tr></table></figure></p>
+<h3 id="7-2-gdb显式生成core文件"><a href="#7-2-gdb显式生成core文件" class="headerlink" title="7.2 gdb显式生成core文件"></a>7.2 gdb显式生成core文件</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">generate-core-file	<span class="comment">#先run</span></div><div class="line">gcore	<span class="comment">#上面的简写</span></div></pre></td></tr></table></figure>
+<h3 id="7-3-使用core文件进行调试"><a href="#7-3-使用core文件进行调试" class="headerlink" title="7.3 使用core文件进行调试"></a>7.3 使用core文件进行调试</h3><p>示例程序：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> *p = <span class="literal">NULL</span>;</div><div class="line">    *p = <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面程序当执行<code>*p = 0</code>时程序会crashed，产生core dump file，下面使用gdb进行调试：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">#shell环境加载core文件</div><div class="line">gdb test corefile</div><div class="line"></div><div class="line">#同上，gdb环境中</div><div class="line">file test</div><div class="line">core corefile</div><div class="line"></div><div class="line">#gdb加载core file之后打印的信息</div><div class="line">[New LWP 9672]</div><div class="line">Core was generated by `./test'.</div><div class="line">Program terminated with signal SIGSEGV, Segmentation fault.</div><div class="line">#0  0x000000000040054b in main () at test.c:8</div><div class="line">8	    *p = 0;</div><div class="line"></div><div class="line">#也可以使用where命令定位错误位置</div><div class="line">(gdb) where</div><div class="line">#0  0x000000000040054b in main () at test.c:8</div></pre></td></tr></table></figure></p>
+<p><a href="https://github.com/hellogcc/100-gdb-tips/blob/master/src/index.md" target="_blank" rel="external">参考文献</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/gdb/" rel="tag"># gdb</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/16/cpp_virtual_functions/" rel="next" title="C++虚函数表原理">
+                <i class="fa fa-chevron-left"></i> C++虚函数表原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/18/heap_basis/" rel="prev" title="堆及其基本操作">
+                堆及其基本操作 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/04/17/gdb_basis/"
+           data-title="GDB调试工具入门" data-url="http://yoursite.com/2017/04/17/gdb_basis/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="Stranger" />
+          <p class="site-author-name" itemprop="name">Stranger</p>
+           
+              <p class="site-description motion-element" itemprop="description">今天天气真好</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/scjhan" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/2633996855" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友链
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000" title="廖雪峰Git教程" target="_blank">廖雪峰Git教程</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/solstice/" title="陈硕巨巨" target="_blank">陈硕巨巨</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.aonosora.com" title="膜光哥" target="_blank">膜光哥</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.allitebooks.com/" title="Allitebooks" target="_blank">Allitebooks</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://unsplash.com/" title="Unsplash" target="_blank">Unsplash</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://classfoo.com/" title="Classfoo" target="_blank">Classfoo</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-gdb介绍"><span class="nav-number">1.</span> <span class="nav-text">0 gdb介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-gdb常用命令"><span class="nav-number">2.</span> <span class="nav-text">1 gdb常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-list"><span class="nav-number">2.0.1.</span> <span class="nav-text">1.1 list</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-break"><span class="nav-number">2.0.2.</span> <span class="nav-text">1.2 break</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-delete和clear"><span class="nav-number">2.0.3.</span> <span class="nav-text">1.3 delete和clear</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-查看变量"><span class="nav-number">2.0.4.</span> <span class="nav-text">1.4 查看变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-程序执行时命令"><span class="nav-number">2.0.5.</span> <span class="nav-text">1.5 程序执行时命令</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-gdb调试函数"><span class="nav-number">3.</span> <span class="nav-text">2 gdb调试函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-gdb设置watchpoint"><span class="nav-number">4.</span> <span class="nav-text">3 gdb设置watchpoint</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-gdb设置catchpoint"><span class="nav-number">5.</span> <span class="nav-text">4 gdb设置catchpoint</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-gdb高级打印技巧"><span class="nav-number">6.</span> <span class="nav-text">5 gdb高级打印技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-打印局部变量"><span class="nav-number">6.0.1.</span> <span class="nav-text">5.1 打印局部变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-打印打印进程内存信息"><span class="nav-number">6.0.2.</span> <span class="nav-text">5.2 打印打印进程内存信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-打印变量类型"><span class="nav-number">6.0.3.</span> <span class="nav-text">5.3 打印变量类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-4-打印变量所在文件"><span class="nav-number">6.0.4.</span> <span class="nav-text">5.4 打印变量所在文件</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-gdb应用于多进程-线程"><span class="nav-number">7.</span> <span class="nav-text">6 gdb应用于多进程/线程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-多进程调试"><span class="nav-number">7.1.</span> <span class="nav-text">6.1 多进程调试</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#a-调试正在运行的进程"><span class="nav-number">7.1.0.1.</span> <span class="nav-text">a.调试正在运行的进程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#b-调试子进程"><span class="nav-number">7.1.0.2.</span> <span class="nav-text">b.调试子进程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#c-同时调试父进程和子进程"><span class="nav-number">7.1.0.3.</span> <span class="nav-text">c.同时调试父进程和子进程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-多线程调试"><span class="nav-number">7.2.</span> <span class="nav-text">6.2 多线程调试</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#a-显示线程信息"><span class="nav-number">7.2.0.1.</span> <span class="nav-text">a.显示线程信息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#b-切换线程"><span class="nav-number">7.2.0.2.</span> <span class="nav-text">b.切换线程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#c-只允许一个线程执行"><span class="nav-number">7.2.0.3.</span> <span class="nav-text">c.只允许一个线程执行</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-调试多个程序"><span class="nav-number">7.3.</span> <span class="nav-text">6.3 调试多个程序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-gdb分析core-dump"><span class="nav-number">8.</span> <span class="nav-text">7 gdb分析core dump</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-core文件"><span class="nav-number">8.1.</span> <span class="nav-text">7.1 core文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-gdb显式生成core文件"><span class="nav-number">8.2.</span> <span class="nav-text">7.2 gdb显式生成core文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-3-使用core文件进行调试"><span class="nav-number">8.3.</span> <span class="nav-text">7.3 使用core文件进行调试</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Stranger</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"junhan"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === '') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("sdgdAE1vNJXlfXOQhq08DwvC-gzGzoHsz", "eby5Q8EEiwGYQg9BHLxrtsmD");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

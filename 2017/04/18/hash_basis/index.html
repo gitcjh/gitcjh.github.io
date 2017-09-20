@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="hash," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="0 哈希表概述
+哈希表散列表（Hash table，也叫哈希表），是根据关键码值(Key value)而直接进行访问的数据结构。也就是说，它通过把关键码值映射到表中一个位置来访问记录，以加快查找的速度。这个映射函数叫做散列函数，存放记录的数组叫做散列表。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="哈希表及其基本操作">
+<meta property="og:url" content="http://yoursite.com/2017/04/18/hash_basis/index.html">
+<meta property="og:site_name" content="Junhan's Blog">
+<meta property="og:description" content="0 哈希表概述
+哈希表散列表（Hash table，也叫哈希表），是根据关键码值(Key value)而直接进行访问的数据结构。也就是说，它通过把关键码值映射到表中一个位置来访问记录，以加快查找的速度。这个映射函数叫做散列函数，存放记录的数组叫做散列表。">
+<meta property="og:image" content="http://i1.piimg.com/567571/bb10941041e7821e.jpg">
+<meta property="og:updated_time" content="2017-07-09T15:46:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="哈希表及其基本操作">
+<meta name="twitter:description" content="0 哈希表概述
+哈希表散列表（Hash table，也叫哈希表），是根据关键码值(Key value)而直接进行访问的数据结构。也就是说，它通过把关键码值映射到表中一个位置来访问记录，以加快查找的速度。这个映射函数叫做散列函数，存放记录的数组叫做散列表。">
+<meta name="twitter:image" content="http://i1.piimg.com/567571/bb10941041e7821e.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    tabs: ,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/04/18/hash_basis/"/>
+
+
+
+
+
+  <title>哈希表及其基本操作 | Junhan's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?654b28b71373f0c4e0481699cb1a30e0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Junhan's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">种一棵树最好的时间是十年前，其次是现在。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/18/hash_basis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Stranger">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Junhan's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">哈希表及其基本操作</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-18T13:14:27+08:00">
+                2017-04-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据结构与算法/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构与算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/04/18/hash_basis/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/04/18/hash_basis/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/04/18/hash_basis/" class="leancloud_visitors" data-flag-title="哈希表及其基本操作">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                  <span class="post-meta-divider">|</span>
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  1,522
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  7
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="0-哈希表概述"><a href="#0-哈希表概述" class="headerlink" title="0 哈希表概述"></a>0 哈希表概述</h2><ul>
+<li>哈希表<br>散列表（Hash table，也叫哈希表），是根据关键码值(Key value)而直接进行访问的数据结构。也就是说，它通过把关键码值映射到表中一个位置来访问记录，以加快查找的速度。这个映射函数叫做散列函数，存放记录的数组叫做散列表。<a id="more"></a></li>
+<li>哈希函数<br>把关键字集合K映像到一个有限的连续地址集D的映射关系H表示为：<br><strong>H(key):K-&gt;D,key∈K</strong><br>映射关系H称为哈希函数。</li>
+</ul>
+<h2 id="1-哈希函数构造法"><a href="#1-哈希函数构造法" class="headerlink" title="1 哈希函数构造法"></a>1 哈希函数构造法</h2><h3 id="1-1-直接定址法"><a href="#1-1-直接定址法" class="headerlink" title="1.1 直接定址法"></a>1.1 直接定址法</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">hash</span><span class="params">(<span class="keyword">int</span> key)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> a * key + b; <span class="comment">//a为缩放系数，b为平移系数</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>优点：简单无冲突<br>缺点： 空间浪费  </p>
+<h3 id="1-2-保留余数法"><a href="#1-2-保留余数法" class="headerlink" title="1.2 保留余数法"></a>1.2 保留余数法</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">hash</span><span class="params">(<span class="keyword">int</span> key)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> key % p; <span class="comment">//p取不大于地址长度m的最大素数</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="1-3数字分析法、折叠法、平方取中法"><a href="#1-3数字分析法、折叠法、平方取中法" class="headerlink" title="1.3数字分析法、折叠法、平方取中法"></a>1.3数字分析法、折叠法、平方取中法</h3><h2 id="2-避免冲突"><a href="#2-避免冲突" class="headerlink" title="2 避免冲突"></a>2 避免冲突</h2><h3 id="2-1开放定址法"><a href="#2-1开放定址法" class="headerlink" title="2.1开放定址法"></a>2.1开放定址法</h3><ul>
+<li>线性探测法<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Hi = (H(key) + i) % m   <span class="comment">//1 ≤ i ≤ m-1</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>优点：算法简单<br>缺点：容易产生堆聚现象</p>
+<ul>
+<li>二次探测法<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">di = 1, -1, 4, -4, 9, -9 ...</div><div class="line">Hi = (H(key) + di) % m  ////1 ≤ i ≤ m-1</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="2-2链地址法"><a href="#2-2链地址法" class="headerlink" title="2.2链地址法"></a>2.2链地址法</h2><p>将关键西为同义词的记录链接在同一单链表中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">---------------------------------</div><div class="line">|   |   |   |   |   |   |   |   |</div><div class="line">---------------------------------</div><div class="line">  |           |</div><div class="line">-----       -----</div><div class="line">|   |       |   |</div><div class="line">-----       -----</div></pre></td></tr></table></figure></p>
+<p>简单实现<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> Node &#123;</div><div class="line">    RcdType r;</div><div class="line">    <span class="keyword">struct</span> Node *next;</div><div class="line">&#125; Node;</div><div class="line"><span class="keyword">class</span> hash_table</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span>&#123;</div><div class="line">    Node *rcd;</div><div class="line">    <span class="keyword">int</span> size;</div><div class="line">    <span class="keyword">int</span> count;</div><div class="line">    <span class="keyword">int</span> (*hash)(KeyType key, <span class="keyword">int</span> hashSize);</div><div class="line">&#125; hash_table;</div><div class="line"></div><div class="line"><span class="comment">//初始化</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">create_hash_table</span><span class="params">(hash_table &amp;table, <span class="keyword">int</span> size, <span class="keyword">int</span> (*hash)</span><span class="params">(KeyType, <span class="keyword">int</span>)</span></span></div><div class="line">&#123;</div><div class="line">    table.rcd = (Node*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node) * size);</div><div class="line">    table.size = size;</div><div class="line">    table.hash = hash;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//查找</span></div><div class="line"><span class="function">Node *<span class="title">search_hash_table</span><span class="params">(hash_table &amp;tab, <span class="keyword">int</span> key)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> index = tab.hash(key, tab.size);</div><div class="line">    <span class="keyword">for</span> (Node *p = &amp;tab.rcd[index], p != <span class="literal">NULL</span>; p = p-&gt;next)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">if</span> (p-&gt;r-&gt;key == key)</div><div class="line">            <span class="keyword">return</span> p;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//插入数据</span></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">insert_hash_table</span><span class="params">(hash_table &amp;tab, RcdType r)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> (search_hash_table(tab, r-&gt;key) == <span class="literal">NULL</span>)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">int</span> index = tab.hash(r.key, table.size);</div><div class="line">        Node *p = (Node)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</div><div class="line">        p-&gt;r = r;</div><div class="line">        p-&gt;next = tab.rcd[p];   <span class="comment">//插入表头</span></div><div class="line">        tab.rcd[p] = p;</div><div class="line">        ++tab.count;</div><div class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="3-C-11哈希表——std-unordered-map"><a href="#3-C-11哈希表——std-unordered-map" class="headerlink" title="3.C++11哈希表——std::unordered_map"></a>3.C++11哈希表——std::unordered_map</h2><p><code>std::unordered_map</code>是C++新增的一个哈希表类型，和std::map类似，采用key-value结构，通过key快速索引到value。  </p>
+<h3 id="3-1实现机制"><a href="#3-1实现机制" class="headerlink" title="3.1实现机制"></a>3.1实现机制</h3><p>unordered_map内部实现了一个链式哈希表，即一个大bucket vecto挂着链表来解决冲突。<br><img src="http://i1.piimg.com/567571/bb10941041e7821e.jpg" alt="">  </p>
+<ol>
+<li>hash_map其插入过程是：</li>
+</ol>
+<ul>
+<li>得到key</li>
+<li>通过hash函数得到hash值</li>
+<li>得到桶号(一般都为hash值对桶数求模)</li>
+<li>存放key和value在桶内。</li>
+</ul>
+<ol>
+<li>其取值过程是:<br>得到key</li>
+</ol>
+<ul>
+<li>通过hash函数得到hash值</li>
+<li>得到桶号(一般都为hash值对桶数求模)</li>
+<li>比较桶的内部元素是否与key相等，若都不相等，则没有找到。</li>
+<li>取出相等的记录的value。</li>
+</ul>
+<h3 id="3-2-部分源码"><a href="#3-2-部分源码" class="headerlink" title="3.2 部分源码"></a>3.2 部分源码</h3><ol>
+<li><p><code>unordered_map</code>在<code>bits/unordered_map.h</code>头文件中定义，对哈希表的所有操作都是对成员_M_h进行操作。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span>&lt;...&gt;</div><div class="line"><span class="keyword">class</span> <span class="built_in">unordered_map</span> &#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line">    <span class="number">_</span>Hashtable <span class="number">_</span>M_h;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+</li>
+<li><p>_M_h是_Hashtable类型，定义在<code>bits/hashtable.h</code>头文件中。</p>
+<blockquote>
+<p> Each _Hashtable data structure has:  </p>
+<ul>
+<li>_Bucket[]       _M_buckets  </li>
+<li>_Hash_node_base _M_bbegin  </li>
+<li>size_type       _M_bucket_count  </li>
+<li>size_type       _M_element_count  </li>
+</ul>
+</blockquote>
+</li>
+</ol>
+<p>源码如下：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span>&lt;...&gt;</div><div class="line"><span class="keyword">class</span> <span class="number">_</span>Hashtable &#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line"><span class="keyword">private</span>:</div><div class="line">    <span class="number">__b</span>ucket_type*		<span class="number">_</span>M_buckets;</div><div class="line">    size_type			<span class="number">_</span>M_bucket_count;</div><div class="line">    <span class="number">__b</span>efore_begin		<span class="number">_</span>M_bbegin;</div><div class="line">    size_type			<span class="number">_</span>M_element_count;</div><div class="line">    <span class="number">_</span>RehashPolicy		<span class="number">_</span>M_rehash_policy;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<h3 id="3-3-unordered-map用法"><a href="#3-3-unordered-map用法" class="headerlink" title="3.3 unordered_map用法"></a>3.3 unordered_map用法</h3><ol>
+<li><p>一个简单的使用——key类型为内置类型</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="built_in">std</span>::<span class="built_in">string</span>&gt; <span class="built_in">map</span>;</div><div class="line">    <span class="built_in">map</span>.insert(<span class="built_in">std</span>::make_pair(<span class="number">1</span>, <span class="string">"one"</span>));</div><div class="line">    <span class="built_in">map</span>.insert(<span class="built_in">std</span>::make_pair(<span class="number">2</span>, <span class="string">"tow"</span>));</div><div class="line">    <span class="built_in">map</span>.insert(<span class="built_in">std</span>::make_pair(<span class="number">3</span>, <span class="string">"three"</span>));</div><div class="line"></div><div class="line">    <span class="keyword">auto</span> iter = <span class="built_in">map</span>.find(<span class="number">3</span>);</div><div class="line">    <span class="keyword">if</span> (iter != <span class="built_in">map</span>.end())</div><div class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Found:"</span> +  iter-&gt;second;</div><div class="line">    <span class="keyword">else</span> <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Not found"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>高级用法——key类型为自定义类型<br>使用自定义类型时，需要定义hash_value函数并且重载operator==。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> Person  </div><div class="line">&#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="comment">//hash_value</span></div><div class="line">    <span class="keyword">friend</span> <span class="built_in">std</span>::<span class="keyword">size_t</span> hash_value(<span class="keyword">const</span> Person &amp;p)</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">std</span>::<span class="keyword">size_t</span> seed = <span class="number">0</span>;  </div><div class="line">        <span class="built_in">std</span>::hash_combine(seed, <span class="built_in">std</span>::hash_value(p.name));  <span class="comment">//combine</span></div><div class="line">        <span class="built_in">std</span>::hash_combine(seed, <span class="built_in">std</span>::hash_value(p.age));  </div><div class="line">        <span class="keyword">return</span> seed;  </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">friend</span> <span class="built_in">std</span>::ostream&amp; (<span class="built_in">std</span>::ostream &amp;os, <span class="keyword">const</span> Person &amp;p)</div><div class="line">    &#123;</div><div class="line">        os &lt;&lt; p.m_name &lt;&lt; <span class="string">" "</span> &lt;&lt; p.m_age;</div><div class="line">        <span class="keyword">return</span> os;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    Person(<span class="built_in">std</span>::<span class="built_in">string</span> name, <span class="keyword">int</span> age) : m_name(name), m_age(age) &#123;&#125;</div><div class="line">    </div><div class="line">    <span class="comment">//重载operator==</span></div><div class="line">    <span class="keyword">bool</span> <span class="keyword">operator</span>==(<span class="keyword">const</span> Person&amp; p) <span class="keyword">const</span>  </div><div class="line">    &#123;  </div><div class="line">        <span class="keyword">return</span> m_name == p.m_name &amp;&amp; m_age == p.m_age;  </div><div class="line">    &#125;</div><div class="line"><span class="keyword">private</span>:</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> m_name;  </div><div class="line">    <span class="keyword">int</span> m_age; </div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span>  </span></div><div class="line">&#123;  </div><div class="line">    <span class="keyword">typedef</span> <span class="built_in">std</span>::<span class="built_in">unordered_map</span>&lt;person,<span class="keyword">int</span>&gt; umap;  </div><div class="line">    umap m;  </div><div class="line">    <span class="function">Person <span class="title">p1</span><span class="params">(<span class="string">"Tom1"</span>,<span class="number">20</span>)</span></span>;  </div><div class="line">    <span class="function">Person <span class="title">p2</span><span class="params">(<span class="string">"Tom2"</span>,<span class="number">22</span>)</span></span>;  </div><div class="line">    <span class="function">Person <span class="title">p3</span><span class="params">(<span class="string">"Tom3"</span>,<span class="number">22</span>)</span></span>;  </div><div class="line">    <span class="function">Person <span class="title">p4</span><span class="params">(<span class="string">"Tom4"</span>,<span class="number">23</span>)</span></span>;  </div><div class="line">    <span class="function">Person <span class="title">p5</span><span class="params">(<span class="string">"Tom5"</span>,<span class="number">24</span>)</span></span>;  </div><div class="line">    m.insert(umap::value_type(p3, <span class="number">100</span>));  </div><div class="line">    m.insert(umap::value_type(p4, <span class="number">100</span>));  </div><div class="line">    m.insert(umap::value_type(p5, <span class="number">100</span>));  </div><div class="line">    m.insert(umap::value_type(p1, <span class="number">100</span>));  </div><div class="line">    m.insert(umap::value_type(p2, <span class="number">100</span>));  </div><div class="line">      </div><div class="line">    <span class="keyword">for</span>(umap::iterator iter = m.begin(); iter != m.end(); iter++)  </div><div class="line">    &#123;  </div><div class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; iter-&gt;first;</div><div class="line">    &#125;  </div><div class="line">      </div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="3-4-优缺点与map的比较"><a href="#3-4-优缺点与map的比较" class="headerlink" title="3.4 优缺点与map的比较"></a>3.4 优缺点与map的比较</h3><ul>
+<li>map内部使用红黑树来维护，该结构具有自动排序的功能，因此map内部的所有元素都是有序的。红黑树的每一个节点都代表着map的一个元素，因此，对于map进行的查找，删除，添加等一系列的操作都相当于是对红黑树进行这样的操作，故红黑树的效率决定了map的效率。插入、查找复杂度一般为O(logn)。</li>
+<li>unordered_map，顾名思义，是一个无序map，内部实现了哈希表，因此插入、查找效率一般为O(1)</li>
+<li>内存占用方面，map内存占用略低，unordered_map内存占用略高,而且是线性成比例的。</li>
+</ul>
+<h2 id="4-哈希表经典面试题"><a href="#4-哈希表经典面试题" class="headerlink" title="4 哈希表经典面试题"></a>4 哈希表经典面试题</h2><blockquote>
+<p>给定a、b两个文件，各存放50亿个url，每个url各占64字节，内存限制是4G，让你找出a、b文件共同的url？  </p>
+</blockquote>
+<p>答案：可以估计每个文件安的大小为5G×64=320G，远远大于内存限制的4G。所以不可能将其完全加载到内存中处理。考虑采取分而治之的方法。</p>
+<ol>
+<li>遍历文件a，对每个url求取hash(url)%1000，然后根据所取得的值将url分别存储到1000个小文件（记为a0,a1,…,a999）中。这样每个小文件的大约为300M。 </li>
+<li>遍历文件b，采取和a相同的方式将url分别存储到1000小文件（记为b0,b1,…,b999）。这样处理后，所有可能相同的url都在对应的小文件（a0vsb0,a1vsb1,…,a999vsb999）中，不对应的小文件不可能有相同的url。然后我们只要求出1000对小文件中相同的url即可。</li>
+<li>求每对小文件中相同的url时，可以把其中一个小文件的url存储到hash_set中。然后遍历另一个小文件的每个url，看其是否在刚才构建的hash_set中，如果是，那么就是共同的url，存到文件里面就可以了。</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/hash/" rel="tag"># hash</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/18/stack_and_queue_basis/" rel="next" title="栈和队列及其基本操作">
+                <i class="fa fa-chevron-left"></i> 栈和队列及其基本操作
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/18/use_functor_and_bind_instead_vfunc/" rel="prev" title="以boost::function和Boost::bind取代虚函数">
+                以boost::function和Boost::bind取代虚函数 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/04/18/hash_basis/"
+           data-title="哈希表及其基本操作" data-url="http://yoursite.com/2017/04/18/hash_basis/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="Stranger" />
+          <p class="site-author-name" itemprop="name">Stranger</p>
+           
+              <p class="site-description motion-element" itemprop="description">今天天气真好</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/scjhan" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/2633996855" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友链
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000" title="廖雪峰Git教程" target="_blank">廖雪峰Git教程</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/solstice/" title="陈硕巨巨" target="_blank">陈硕巨巨</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.aonosora.com" title="膜光哥" target="_blank">膜光哥</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.allitebooks.com/" title="Allitebooks" target="_blank">Allitebooks</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://unsplash.com/" title="Unsplash" target="_blank">Unsplash</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://classfoo.com/" title="Classfoo" target="_blank">Classfoo</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-哈希表概述"><span class="nav-number">1.</span> <span class="nav-text">0 哈希表概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-哈希函数构造法"><span class="nav-number">2.</span> <span class="nav-text">1 哈希函数构造法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-直接定址法"><span class="nav-number">2.1.</span> <span class="nav-text">1.1 直接定址法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-保留余数法"><span class="nav-number">2.2.</span> <span class="nav-text">1.2 保留余数法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3数字分析法、折叠法、平方取中法"><span class="nav-number">2.3.</span> <span class="nav-text">1.3数字分析法、折叠法、平方取中法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-避免冲突"><span class="nav-number">3.</span> <span class="nav-text">2 避免冲突</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1开放定址法"><span class="nav-number">3.1.</span> <span class="nav-text">2.1开放定址法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2链地址法"><span class="nav-number">4.</span> <span class="nav-text">2.2链地址法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-C-11哈希表——std-unordered-map"><span class="nav-number">5.</span> <span class="nav-text">3.C++11哈希表——std::unordered_map</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1实现机制"><span class="nav-number">5.1.</span> <span class="nav-text">3.1实现机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-部分源码"><span class="nav-number">5.2.</span> <span class="nav-text">3.2 部分源码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-unordered-map用法"><span class="nav-number">5.3.</span> <span class="nav-text">3.3 unordered_map用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-优缺点与map的比较"><span class="nav-number">5.4.</span> <span class="nav-text">3.4 优缺点与map的比较</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-哈希表经典面试题"><span class="nav-number">6.</span> <span class="nav-text">4 哈希表经典面试题</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Stranger</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"junhan"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === '') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("sdgdAE1vNJXlfXOQhq08DwvC-gzGzoHsz", "eby5Q8EEiwGYQg9BHLxrtsmD");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

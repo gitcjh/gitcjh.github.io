@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="lock-free," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="所谓lock-free，也即锁无关，通俗的解释如下
+
+ 一个“锁无关”的程序能够确保执行它的所有线程中至少有一个能够继续往下执行。”">
+<meta property="og:type" content="article">
+<meta property="og:title" content="lock-free">
+<meta property="og:url" content="http://yoursite.com/2017/07/13/lock-free/index.html">
+<meta property="og:site_name" content="Junhan's Blog">
+<meta property="og:description" content="所谓lock-free，也即锁无关，通俗的解释如下
+
+ 一个“锁无关”的程序能够确保执行它的所有线程中至少有一个能够继续往下执行。”">
+<meta property="og:image" content="http://yoursite.com/uploads/lock-free.png">
+<meta property="og:updated_time" content="2017-07-14T00:56:59.016Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="lock-free">
+<meta name="twitter:description" content="所谓lock-free，也即锁无关，通俗的解释如下
+
+ 一个“锁无关”的程序能够确保执行它的所有线程中至少有一个能够继续往下执行。”">
+<meta name="twitter:image" content="http://yoursite.com/uploads/lock-free.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    tabs: ,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/07/13/lock-free/"/>
+
+
+
+
+
+  <title>lock-free | Junhan's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?654b28b71373f0c4e0481699cb1a30e0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Junhan's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">种一棵树最好的时间是十年前，其次是现在。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/13/lock-free/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Stranger">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Junhan's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">lock-free</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-13T19:47:51+08:00">
+                2017-07-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/并发编程/" itemprop="url" rel="index">
+                    <span itemprop="name">并发编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/07/13/lock-free/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/07/13/lock-free/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/07/13/lock-free/" class="leancloud_visitors" data-flag-title="lock-free">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                  <span class="post-meta-divider">|</span>
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  6,682
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  25
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>所谓<code>lock-free</code>，也即锁无关，通俗的解释如下</p>
+<blockquote>
+<p> 一个“锁无关”的程序能够确保执行它的所有线程中至少有一个能够继续往下执行。”</p>
+</blockquote>
+<a id="more"></a>
+<p><img src="/uploads/lock-free.png" alt=""></p>
+<p>多线程并发编程中，如果多个线程之间存在共享内存，为了保证线程安全，每个线程存取共享内存的时候都要显式加锁。当有一个线程取得了锁，它就拿到了共享内存的存取权限，其他没有取到锁的线程需要原地阻塞，直到占有锁的线程主动释放锁，同时自己拿到相应的锁。</p>
+<p>考虑一种情况，假设拿到锁的线程突然挂了，而且没有释放锁，这种情况下整个程序都会阻塞在这里。而<code>lock-free</code>正是可以避免这种情况，在<code>lock-free</code>下，即使有线程挂掉，也不影响整个程序的继续往下运行，也就是说，系统整体是一直在前进的。</p>
+<p>上面说了，显式加锁保证线程安全的同时会出现非<code>lock-free</code>的情况，但是不加锁也会导致着中情况，例如下面的代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">while</span> (x == <span class="number">0</span>) &#123;</div><div class="line">	x = <span class="number">1</span> - x;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果两个线程同时执行进入while，然后x两次改变值，还是为0，这样的话两个线程都会一直阻塞在while，系统整体无法前进，依然不是<code>lock-free</code>。</p>
+<p>关于<code>lock-free</code>的讨论，<em>Andrei Alexandrescu</em>曾在他的专栏<strong>Generic<programming></programming></strong>写过一片文章，《<a href="http://www.ddj.com/cpp/184401865" target="_blank" rel="external">Lock-Free Data Structures</a>》，详细讲解了<code>lock-free</code>技术，以下是中文译文。</p>
+<p>在Generic<programming>沉默了一期之后(研究生的学业总是使人不得不投入百分之百的精力),这一期文章的可写内容突然多得令人似乎有点无所适从.例如,其中之一就是关于构造函数的讨论,特别是转发构造函数(forwarding constructor),(构造函数中的)异常处理,以及两段式(two-stage)对象构造.另一个可选主题是创建不完全类型的容器(例如list、vector或map)（顺便再回顾一下Yanslander技术[2]），这一任务可以借助于一些有趣的技巧来完成（当下的标准库容器并不能保证可存放不完全类型的对象）。</programming></p>
+<p>虽说以上两个候选主题都挺诱人，不过跟所谓的“锁无关（Lock-Free）”数据结构一比就只能靠边站了，后者是多线程编程的极重要技术之一。在今年的“Programming Language Design and Implementation”大会(<a href="http://www.cs.umd.edu/~pugh/pldi04/" target="_blank" rel="external">http://www.cs.umd.edu/~pugh/pldi04/</a>)上，Michael Maged展示了世界上第一个锁无关的(lock-free)内存分配器[7]，跟那些小心翼翼地设计的、基于锁(lock-based)的，同时也更为复杂的内存分配器相比，Michael的锁无关的内存分配器在诸多<a href="http://lib.csdn.net/base/softwaretest" target="_blank" rel="external">测试</a>下都表现得更为优越。</p>
+<p>Michael的锁无关内存分配器代表着近来出现的许多锁无关数据结构和<a href="http://lib.csdn.net/base/datastructure" target="_blank" rel="external">算法</a>的最新进展。</p>
+<hr>
+<h3 id="什么是“锁无关-lock-free-”？"><a href="#什么是“锁无关-lock-free-”？" class="headerlink" title="什么是“锁无关(lock-free)”？"></a>什么是“锁无关(lock-free)”？</h3><p>不久前这个问题正是我想要问的。作为一个真正的主流多线程程序员，我对基于锁的多线程算法并不感到陌生。在经典的基于锁的多线程程序设计中，只要你需要共享某些数据，你就应当将对它的访问串行化。修改（共享）数据的操作必须以原子操作的形式出现，这样才能保证没有其它线程能在中途插一脚来破坏相应数据的不变式（invariant）。即便像++count<em>(count</em>是整型变量)这样的简单操作也得加锁，因为增量操作实际上是分三步进行的：读、改、写（回），而这显然不是原子的。</p>
+<p>简而言之，在基于锁的多线程编程中，你得确保任何针对共享数据的、且有可能导致竞争条件（race conditions）的操作都被做成了原子操作（通过对一个互斥体（mutex）进行加锁解锁）。从好的一面来说，只要互斥体是在锁状态，你就可以放心地进行任何操作，不用担心其它线程会闯进来搞坏你的共享数据。</p>
+<p>然而，正是这种在互斥体的锁状态下可以为所欲为的事实同样也带来了问题。例如，你可以在锁期间读键盘或进行某些耗时较长的I/O操作，这便意味着其它想要占用你正占用着的互斥体的线程只能被晾在一旁等着。更糟的是，此时你可能会试图对另一个互斥体进行加锁，后者彼时或许已经被另一个线程占用了，而这个线程倒过来又试图去获取已然被你的线程所占用的互斥体，如此一来两个线程全都陷在那里动弹不得，死锁！</p>
+<p>而在锁无关多线程编程的世界里，几乎任何操作都是无法原子地完成的。只有很小一集操作可以被原子地进行，这一限制使得锁无关编程的难度大大地增加了。（实际上，世界上肯定有不少锁无关编程专家，而我则不在此列。不过幸运的是，这篇文章中所提供的基本工具、内容以及热情可能会激发你成为一个这方面的专家。）锁无关编程带来的好处是在线程进展和线程交互方面，借助于锁无关编程，你能够对线程的进展和交互提供更好的保证。但话说回来，刚刚我们所谓的“很小一集可以被原子地进行的操作”又是指哪些操作呢？实际上，这个问题相当于，最少需要一集什么样的原语才能够允许我们实现出任何锁无关的算法（如果存在这么一个“最小集”的话）？</p>
+<p>如果你认为这个问题的基础性使得它的解决者理当获得奖赏的话，你并不是唯一一个这么认为的。2003年，Maurice Herlihy因他在1991年发表的开创性论文“Wait-Free Synchronization”（ <a href="http://www.podc.org/dijkstra/2003.html" target="_blank" rel="external">http://www.podc.org/dijkstra/2003.html</a>）而获得了分布式编程的Edsger W. Dijkstra奖。在论文中，Herlihy证明了哪些原语对于构造锁无关数据结构来说是好的，哪些则是不好的。他的论述使得一些看似漂亮的硬件架构突然变得一钱不值，同时他的论文还指明了在将来的硬件中应当实现哪些同步原语。</p>
+<p>例如，Herlihy的论文指出，像test-and-set、swap、fetch-and-add、甚至原子队列这样的看似强大的工具都不足以良好地同步两个以上的线程（这一结果很是令人惊讶，因为带有原子push和pop操作的队列看上去提供了一个相当强大的抽象）。从好的一面来说，Herlihy同样给出了一般性结论，他证明了一些简单的结构就足以实现出任何针对任意数目的线程的锁无关算法。</p>
+<p>最简单、也是最普遍的一个通用原语就是CAS操作（Compare-And-Swap），这也是我一直使用的原语：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">CAS</span><span class="params">(T* addr, T expected, T value)</span> </span>&#123;</div><div class="line">	<span class="keyword">if</span> (*addr == expected) &#123;</div><div class="line">		*addr = value;</div><div class="line">		<span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">     <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>CAS原语负责比较某个内存地址处的内容与一个期望值，如果比较成功则将该内存地址处的内容替换为一个新值。这整个操作是原子的。许多现代处理器都实现了不同位长度的CAS或其等价原语（这里我用模板来表达它正是由于这个原因，我们可以假定一个具体的实现使用元编程来限制可能的T）。作为一个原则，CAS能够操作的位数越多，使用它来实现锁无关数据结构就越容易。如今的32位处理器实现了64位的CAS，例如Intel汇编指令中称它为CMPXCHG8（你得跟这些汇编助记符多亲近亲近）。</p>
+<h3 id="一点告诫"><a href="#一点告诫" class="headerlink" title="一点告诫"></a>一点告诫</h3><p>通常一篇C++文章中会伴随着C++代码片断和示例。理想情况下这些代码会是符合标准C++规范的，而且Generic<programming>专栏的确尽量做到了这一点。</programming></p>
+<p>然而，当文章涉及的内容是多线程编程时，给出符合标准C++的示例代码就是不可能的了，因为标准C++中根本就没有线程的概念，而你无法编码不存在的东西。因此，这篇文章中的代码某种意义上只不过是“伪码”，而并非可移植的标准C++代码。例如内存屏障（memory barriers），对于本文中描述的算法来说，真正的实现代码要么是汇编写的，要么得在C++代码中到处插入所谓的“内存屏障”（“内存屏障”是一种处理器相关的机制，它能够强制内存读写的顺序性）。为了不失讨论重点，这里我并不打算对内存屏障多作介绍，有兴趣的读者可以参考Butenhof的著作[3]，或者在下面的注中提到的一篇关于它的简单介绍[6]。为了方便讨论，这里我假定我们的编译器和硬件都没有进行过分的优化（例如消除某些“冗余”的变量读取，这在单线程环境下的确是个有效的优化）。从技术上来讲，这即是说一个“顺序一致”的模型，其中读和写操作的执行顺序跟它们在源代码中的顺序是完全一样的[8]。</p>
+<h3 id="等待无关（Wait-Free）-锁无关（Lock-Free）与基于锁（Lock-Based）的比较"><a href="#等待无关（Wait-Free）-锁无关（Lock-Free）与基于锁（Lock-Based）的比较" class="headerlink" title="等待无关（Wait-Free）/锁无关（Lock-Free）与基于锁（Lock-Based）的比较"></a>等待无关（Wait-Free）/锁无关（Lock-Free）与基于锁（Lock-Based）的比较</h3><p>一个“等待无关”的程序可以在有限步之内结束，而不管其它线程的相对速度如何。</p>
+<p>一个“锁无关”的程序能够确保执行它的所有线程中至少有一个能够继续往下执行。这便意味着有些线程可能会被任意地延迟，然而在每一步都至少有一个线程能够往下执行。因此这个系统作为一个整体总是在“前进”的，尽管有些线程的进度可能不如其它线程来得快。而基于锁的程序则无法提供上述的任何保证。一旦任何线程持有了某个互斥体并处于等待状态，那么其它任何想要获取同一互斥体的线程就只好站着干瞪眼；一般来说，基于锁的算法无法摆脱“死锁”或“活锁”的阴影，前者如两个线程互相等待另一个所占有的互斥体，后者如两个线程都试图去避开另一个线程的锁行为，就像两个在狭窄走廊里面撞了个照面的家伙，都试图去给对方让路，结果像跳交谊舞似的摆来摆去最终还是面对面走不过去。当然，对于我们人来说，遇到这种情况打个哈哈就行了，但处理器却不这么认为，它会不知疲倦地就这样干下去直到你强制重启。</p>
+<p>等待无关和锁无关算法的定义意味着它们有更多的优点：</p>
+<ul>
+<li>线程中止免疫：杀掉系统中的任何线程都不会导致其它线程被延迟。</li>
+<li>信号免疫：C和C++标准禁止在信号或异步中断中调用某些系统例程（如malloc）。如果中断与某个被中断线程同时调用malloc的话，结果就会导致死锁。而锁无关例程则没有这一问题：线程可以自由地互相穿插执行。</li>
+<li>优先级倒置免疫：所谓“优先级倒置”就是指一个低优先级线程持有了一个高优先级线程所需要的互斥体。这种微妙的冲突必须由OS内核来解决。而等待无关和锁无关算法则对此免疫。</li>
+</ul>
+<h3 id="一个锁无关的WRRM-Map"><a href="#一个锁无关的WRRM-Map" class="headerlink" title="一个锁无关的WRRM Map"></a>一个锁无关的WRRM Map</h3><p>写专栏文章的好处之一就是你可以定义自己的缩写，所以就让我们来定义WRRM（Write Rarely Read Many）这一缩写，一个WRRM Map是一个被读比被写的次数多得多的map。例如，对象工厂[1]，观察者模式的许多具体实例[5]，以及一个将币种跟汇率联系在一起的map（许多时候你只是对它进行读取，而只有很少的时候才会更新），当然还有许许多多其它的查找表。</p>
+<p>WRRM Map可以通过std::map或“准标准”的unordered_map（<a href="http://www.open-std.org/jtcl/sc22/wg21/docs/papers/2004/n1647.pdf" target="_blank" rel="external">http://www.open-std.org/jtcl/sc22/wg21/docs/papers/2004/n1647.pdf</a>）来予以实现，不过正如我在Modern C++ Design中所说的，assoc_vector（一个已序的vector<pair>）也是一个不错的候选，因为它用更新速度换取了查找速度。总而言之，锁无关性质是与具体的数据结构选择无关（正交）的；我们姑且就称后者为Map<key,value>。同样，出于这篇文章的意图，当我说map时就是指那些提供了根据key来查找并能够更新key-value对的表，下文将不再重申这一点。</key,value></pair></p>
+<p>让我们来回顾一下一个基于锁的WRRMMap是怎样实现的：我们将一个Map对象与一个Mutex对象结合起来，像这样：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// WRRMMap的一个基于锁的实现</span></div><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> K, <span class="keyword">class</span> V&gt;</div><div class="line"><span class="keyword">class</span> WRRMMap &#123;</div><div class="line">	Mutex mtx_;</div><div class="line">	Map&lt;K, V&gt; map_;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">	<span class="function">V <span class="title">Lookup</span><span class="params">(<span class="keyword">const</span> K&amp; k)</span> </span>&#123;</div><div class="line">		<span class="function">Lock <span class="title">lock</span><span class="params">(mtx_)</span></span>;</div><div class="line">		<span class="keyword">return</span> map_[k];</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">Update</span><span class="params">(<span class="keyword">const</span> K&amp; k, <span class="keyword">const</span> V&amp; v)</span> </span>&#123;</div><div class="line">		<span class="function">Lock <span class="title">lock</span><span class="params">(mtx_)</span></span>;</div><div class="line">		map_[k] = v;</div><div class="line">	&#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>为了避免所有权问题以及无效引用问题（这两个问题后面会给我们带来大麻烦），Lookup按值返回其结果。这一做法虽说稳妥但有代价。每次查找都会导致对Mutex加锁/解锁，而实际上一是平行的查找并不需要相互加锁，二是Update比Lookup发生的频率要小得多。那么，现在就让我们来实现一个更好的WRRMMap吧。</p>
+<h3 id="垃圾收集，你在何方？"><a href="#垃圾收集，你在何方？" class="headerlink" title="垃圾收集，你在何方？"></a>垃圾收集，你在何方？</h3><p>对实现一个锁无关的WRRMMap的第一番尝试停在下面这几个问题上：</p>
+<ul>
+<li>读取操作(Read)没有任何锁。</li>
+<li>更新操作(Update)对整个map作一份拷贝，然后更新这份拷贝，最后再用这份拷贝来替换掉原来的旧map（通过CAS原语来进行）。如果最后一步的CAS操作没有成功的话，就循环尝试“拷贝/更新/CAS回去”这一步骤直到成功。</li>
+<li>由于CAS原语所能操作的字节数是有限制的，所以WRRMMap存放指向实际Map的指针，而不是一个Map。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// WRRMMap的首个锁无关的实现</span></div><div class="line"><span class="comment">// 只有当你有GC的时候才行</span></div><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> K, <span class="keyword">class</span> V&gt;</div><div class="line"><span class="keyword">class</span> WRRMMap &#123;</div><div class="line">	Map&lt;K, V&gt;* pMap_;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">	<span class="function">V <span class="title">Lookup</span> <span class="params">(<span class="keyword">const</span> K&amp; k)</span> </span>&#123;</div><div class="line">		<span class="comment">// 瞧，没有锁！</span></div><div class="line">		 <span class="keyword">return</span> (*pMap_) [k];</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">  	<span class="function"><span class="keyword">void</span> <span class="title">Update</span><span class="params">(<span class="keyword">const</span> K&amp; k, <span class="keyword">const</span> V&amp; v)</span> </span>&#123;</div><div class="line">		Map&lt;K, V&gt;* pNew = <span class="number">0</span>;</div><div class="line">  		<span class="keyword">do</span> &#123;</div><div class="line">			Map&lt;K, V&gt;* pOld = pMap_;</div><div class="line">			<span class="keyword">delete</span> pNew;</div><div class="line">			pNew = <span class="keyword">new</span> Map&lt;K, V&gt;(*pOld);</div><div class="line">			(*pNew) [k] = v;</div><div class="line">		&#125; <span class="keyword">while</span> (!CAS(&amp;pMap_, pOld, pNew));</div><div class="line">		<span class="comment">// 别 delete pMap_;</span></div><div class="line">	&#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>这行得通！在一个循环当中，Update()例程对整个map作了一份拷贝，并往该副本中加入了一个新项，最后再尝试交换新旧两个map的指针。这里，最后一步，一定要使用CAS原语而不是简单的赋值，这很关键，否则像下面这样的一个执行序列将会破坏该map：</p>
+<ul>
+<li>线程A对该map作了一份副本</li>
+<li>线程B对该map作了一份副本并更新了副本</li>
+<li>线程A往其副本中加入新项</li>
+<li>线程A用其改写后的副本替换原有map，这里，线程A的改写后的副本中没有线程B所作的任何改动。</li>
+</ul>
+<p>而通过CAS，一切都能够优雅地完成，因为每个线程都相当于作了如下的陈述：“假设该map自从我上次观察它以来并没有任何更动，那么就进行CAS（写回改动后的新map）。否则一切从头来过。”</p>
+<p>根据定义，这就使得Update成了一个锁无关的算法，但它并不是等待无关的。例如，如果若干线程同时调用Update，那么它们每一个都可能会循环尝试不确定的次数，然而总会有某个线程能够确保成功更新该map，因而整体上的进度总是在继续的。另外，幸运的是，Lookup是等待无关的。</p>
+<p>在一个拥有垃圾收集的环境中，我们的工作就算完成了，而这篇文章也将在一片欢欣鼓舞中结束。然而，事实是我们并没有垃圾收集，因而只得面对麻烦了。麻烦就是，我们不能简单地就将旧的pMap<em>扔掉（意即delete——译注），如果正当你试图delete它的时候一帮其它线程冲上来想要访问它里面的数据（Lookup）该怎么办呢？你是知道的，垃圾收集器可以访问所有线程的数据及私有栈，所以它对于“哪些pMap</em>所指的map不再被使用了”这个问题有更清晰的认识，而且它也能够优雅地将这些不再被使用的map清理掉。而如果没有垃圾收集器的帮助，事情可就没那么简单了。实际上，是难得多！而且看起来确定性的内存归还在锁无关数据结构方面是个基础问题。</p>
+<h3 id="写锁定-Write-Locked-的WRRM-Map"><a href="#写锁定-Write-Locked-的WRRM-Map" class="headerlink" title="写锁定(Write-Locked)的WRRM Map"></a>写锁定(Write-Locked)的WRRM Map</h3><p>为了弄清我们遇到的问题有多棘手，让我们先来试试用经典的引用计数技术来实现WRRMMap，看看这有何不可。那么，考虑将一个引用计数器跟map的指针绑定在一起，并让WRRMMap保存一个指向如此构造出的数据结构的指针。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> K, <span class="keyword">class</span> V&gt;</div><div class="line"><span class="keyword">class</span> WRRMMap &#123;</div><div class="line">	<span class="keyword">typedef</span> <span class="built_in">std</span>::pair&lt;Map&lt;K, V&gt;*, <span class="keyword">unsigned</span>&gt; Data;</div><div class="line"> 	Data* pData_;</div><div class="line">	...</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>嗯，看上去不赖。现在，Lookup会先递增pData<em>-&gt;second，然后在map中进行查找，最后再递减pData</em>-&gt;second。当pData<em>-&gt;second计数器的值下降到0的时候，pData</em>-&gt;first就可以被delete掉了，接着pData<em>自己也就可以被delete掉了。看起来简单稳妥是不是，只不过…只不过它是幼稚的。试想下面这种情况，正当某个线程注意到引用计数器的值下降到0并着手delete pData</em>时，另一个线程或另一堆线程插进来拽住了垂死的pData_并准备从它进行读取！不管你怎么聪明地安排你的策略，你都逃不开一个基本的问题：即要想读取数据的指针，你得先递增引用计数，但引用计数又必须得是你要读取的数据的一部分，因此倘不先读取那个指针你就无法访问到该引用计数。这就好比一个将开关安放在其顶端的带电铁丝网：要想安全的爬上去你就得先将开关关掉，但要想将开关关掉你就得先安全地爬上去啊！</p>
+<p>那么，就让我们来看看有没有其它方法能够正确地delete旧的map。一个方案是等待然后delete。考虑到随着处理器时间（毫秒计）的推移，旧的pMap<em>对象会被越来越少的线程所访问（这是因为新的访问是对新的map进行的），于是一旦那些在CAS操作之前开始的Lookup操作结束了，对应的（旧）pMap</em>也就可以去见阎王了。因此，我们的一个解决方案就是将旧的pMap<em>推入一个队列，并由一个专门的清理线程，每隔，比如说200毫秒，醒来一次，delete掉队列中待得最久的一个pMap</em>。</p>
+<p>但这并非一个理论上安全的方案（尽管从实际上来说它可能绝大多数情况下都不会出什么意外）。比如说，由于某种原因一个进行Lookup的线程被延迟了，那么清理线程就会在该线程的眼皮子底下delete掉它正在访问的map。这可以通过总是给清理线程赋予一个比任何线程低的优先级来予以避免，然而总的来说，这个方案骨子里的劣根性是难以清除的。如果你也同意对于这样一个技术我们没法为其作任何正儿八经的辩护的话，我们就继续往下。</p>
+<p>其它的方案[4]则依赖于一个扩展的DCAS原子操作，该操作能够compare-and-swap内存中的两个不必连续的字：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T1, <span class="keyword">class</span> T2&gt;</div><div class="line"><span class="function"><span class="keyword">bool</span>  <span class="title">DCAS</span><span class="params">(T1* p1, T2* p2,</span></span></div><div class="line">           T1 e1, T2 e2,</div><div class="line">           T1 v1, T2 v2) &#123;</div><div class="line">	<span class="keyword">if</span> (*p1 == e1 &amp;&amp; *p2 == e2) &#123;</div><div class="line">		*p1 = v1; *p2 = v2;</div><div class="line">		<span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里所说的两个字当然是指map的指针以及引用计数器。DCAS已经由摩托罗拉68040处理器（非常低效地）实现了，然而其它处理器并没有实现它。因此，基于DCAS的解决方案主要是被当成理想方案来考虑的。</p>
+<p>那么，在确定性析构的大背景下，我们对于该问题的尝试首先是求助于不像DCAS那么要求苛刻的CAS2操作。再次说明，许多32位的机器都实现了64位的CAS操作，被称为CAS2（CAS2仅操作连续的字，所以它的能力显然不及DCAS强大）。作为开始，让我们将引用计数跟它所“保卫”的map指针紧挨着存放在内存中：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> K, <span class="keyword">class</span> V&gt;</div><div class="line"><span class="keyword">class</span> WRRMMap &#123;</div><div class="line">	<span class="keyword">typedef</span> <span class="built_in">std</span>::pair&lt;Map&lt;K, V&gt;*, <span class="keyword">unsigned</span>&gt; Data;</div><div class="line">	Data data_;</div><div class="line">	...</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>（注意，这一次，引用计数与它所保护的指针紧挨在一起了，这就消除了我们前面提到的“带电铁丝网-开关”的尴尬问题。待会你就会看到这样做的代价。）</p>
+<p>那么，让我们修改Lookup从而使其能够在访问map之前先递增引用计数，并在访问结束之后将其递减回去。在下面的代码片断中，为了简洁起见，我并没有考虑异常安全问题（这个问题可以用标准技术来解决）。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function">V <span class="title">Lookup</span><span class="params">(<span class="keyword">const</span> K&amp; k)</span> </span>&#123;</div><div class="line">	Data old;</div><div class="line">	Data fresh;</div><div class="line">	<span class="keyword">do</span> &#123;</div><div class="line">		old = data_;</div><div class="line">		fresh = old;</div><div class="line">		++fresh.second;</div><div class="line">	&#125; <span class="keyword">while</span> (CAS(&amp;data_, old, fresh));</div><div class="line">	</div><div class="line">	V temp = (*fresh.first)[k];</div><div class="line">	</div><div class="line">  	<span class="keyword">do</span> &#123;</div><div class="line">		old = data_;</div><div class="line">		fresh = old;</div><div class="line">		--fresh.second;</div><div class="line">	&#125; <span class="keyword">while</span> (CAS(&amp;data_, old, fresh));</div><div class="line"></div><div class="line">	<span class="keyword">return</span> temp;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>最后，Update负责将该map替换为一个新的——仅当其引用计数为1的时候。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">Update</span><span class="params">(<span class="keyword">const</span> K&amp; k, <span class="keyword">const</span> V&amp; v)</span> </span>&#123;</div><div class="line">	Data old;</div><div class="line">	Data fresh;</div><div class="line">  </div><div class="line">	old.second = <span class="number">1</span>;</div><div class="line">	fresh.first = <span class="number">0</span>;</div><div class="line">	fresh.second = <span class="number">1</span>;</div><div class="line"></div><div class="line">	Map&lt;K, V&gt;* last = <span class="number">0</span>;</div><div class="line"></div><div class="line">  	<span class="keyword">do</span> &#123;</div><div class="line">    	old.first = data_.first;</div><div class="line">		<span class="keyword">if</span> (last != old.first) &#123;</div><div class="line">			<span class="keyword">delete</span> fresh.first;</div><div class="line">			fresh.first = <span class="keyword">new</span> Map&lt;K, V&gt;(old.first);</div><div class="line">			fresh.first-&gt;insert(make_pair(k, v));</div><div class="line">			last = old.first;</div><div class="line">		&#125;</div><div class="line">	&#125; <span class="keyword">while</span> (!CAS(&amp;data_, old, fresh));</div><div class="line">	</div><div class="line">  	<span class="keyword">delete</span> old.first; <span class="comment">// whew</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Update是这样工作的：首先它定义old和fresh两个变量（我们现在应该非常熟悉这两个变量了）。只不过这次old.second并非由data<em>.second赋值而来，而是始终为1。这意味着，Update会一直循环直到它等到data</em>.first指针的引用计数变成1（此时没有任何线程在读），并将其替换为另一个引用计数为1的新map的指针。说白了这相当于如下的陈述：“我将会把旧的map替换成一个更新过的，而且我会留神其它对于该map的更新，不过，仅当现有map的引用计数为1的时候我才会进行替换。”变量last及其相关代码只不过是个优化技巧：当旧map并没有被改动，而只是其引用技术被改动的时候，last可以帮助避免我们重建同一个map。</p>
+<p>挺漂亮的手法，对不对？只可惜事实并非如此。Update现在实际上是基于锁的：它得等待所有Lookup结束之后才能去更新该map。而锁无关数据结构的好处就在于一切都能够如行云流水般进行。特别地，在这种实现下，Update很容易就可以被饿死：你只需足够频繁地进行Lookup就行了，让它的引用计数永不降为1。总而言之，到目前为止我们得到的并非一个WRRM Map，而是一个WRRMBNTM（Write-Rarely-Read-Many-But-Not-Too-Many） Map。</p>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>锁无关数据结构是大有前途的技术。它在线程中止、优先级倒置以及信号安全等方面都有着良好的表现。它们永远不会死锁或活锁。在测试当中，最近的锁无关数据结构远远超越了它们的基于锁的版本[9]。然而，锁无关编程的技巧性要求较高，特别是当涉及到内存释放的时候。一个垃圾收集环境对此是大有裨益的，因为它能够暂停并检视所有线程。不过，如果你想要确定性析构的话，你就需要来自硬件或内存分配器的特殊支持了。在下期的Generic<programming>专栏中，我们将会考察优化WRRMMap的途径，使其在确定性析构的基础上实现锁无关。</programming></p>
+<p>如果本期的垃圾收集map和WRRMBNTM Map并没能满足你的胃口的话，下面是个省钱小诀窍：Don’t Go watch the movie <em>Alien vs. Predator</em>, unless you like “so bad it’s funny” movies.（译注：one of the crap jokes I do not get）。</p>
+<p><strong>Acknowlegments</strong></p>
+<p>David B. Held, Michael Maged, Larry Evans, and Scott Meyers provided very helpful feedback. Also, Michael graciously agreed to coauthor the next “Generic<programming>“ installment, which will greatly improve on our <strong>WRRMap</strong> implementation.</programming></p>
+<p><strong>References</strong></p>
+<p>[1] Alexandrescu, Andrei. <em>Modern C++ Design</em>, Addison-Wesley Longman, 2001.</p>
+<p>[2] Alexandrescu, Andrei. “Generic<programming>:yasli::vector Is On the Move,” <em>C/C++ Users Journal</em>, June 2004.</programming></p>
+<p>[3] Butenhof, D.R. <em>Programming with POSIX Threads</em>, Addison-Wesley, 1997.</p>
+<p>[4] Detlefs, David L., Paul A. Martin, Mark Moir, and Guy L. Steele, Jr. “Lock-free Reference Counting,” <em>Proceedings of the Twentieth Annual ACM Symposium on Principles of Distributed Computing</em>, pages 190-199, ACM Press, 2001. ISBN 1-58113-383-9.</p>
+<p>[5] Gamma, Erich, Richard Helm, Ralph E. Johnson, and John Vlissides. <em>Design Patterns: Elements of Resusable Object-Oriented Software</em>, Addison-Wesley, 1995.</p>
+<p>[6] Meyers, Scott and Andrei Alexandrescu. “The Perils of Double-Checked Locking.” <em>Dr. Dobb’s Journal</em>, July 2004.</p>
+<p>[7] Maged, Michael M. “Scalable Lock-free Dynamic Memory Allocation,” <em>Proceedings of the ACM SIGPLAN 2004 Conference on Programming Language Design and Implementation</em>, pages 35-46. ACM Press, 2004. ISBN 1-58113-807-5.</p>
+<p>[8] Robison, Arch. “Memory Consistency &amp; .NET,” <em>Dr. Dobb’s Journal</em>, April 2003.</p>
+<p>[9] Maged, Michael M. “CAS-Based Lock-Free Algorithm for Shared Deques,” <em>The Ninth Euro-Par Conference on Parallel Processing</em>, LNCS volume 2790, pages 651-660, August 2003.</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/lock-free/" rel="tag"># lock-free</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/11/oauth2dot0_proto/" rel="next" title="OAuth2.0协议详解">
+                <i class="fa fa-chevron-left"></i> OAuth2.0协议详解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/14/golang_channel_the_blocked_mq/" rel="prev" title="Go Channel原理--阻塞式消息队列">
+                Go Channel原理--阻塞式消息队列 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/07/13/lock-free/"
+           data-title="lock-free" data-url="http://yoursite.com/2017/07/13/lock-free/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="Stranger" />
+          <p class="site-author-name" itemprop="name">Stranger</p>
+           
+              <p class="site-description motion-element" itemprop="description">今天天气真好</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/scjhan" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/2633996855" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友链
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000" title="廖雪峰Git教程" target="_blank">廖雪峰Git教程</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/solstice/" title="陈硕巨巨" target="_blank">陈硕巨巨</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.aonosora.com" title="膜光哥" target="_blank">膜光哥</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.allitebooks.com/" title="Allitebooks" target="_blank">Allitebooks</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://unsplash.com/" title="Unsplash" target="_blank">Unsplash</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://classfoo.com/" title="Classfoo" target="_blank">Classfoo</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是“锁无关-lock-free-”？"><span class="nav-number">1.</span> <span class="nav-text">什么是“锁无关(lock-free)”？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一点告诫"><span class="nav-number">2.</span> <span class="nav-text">一点告诫</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#等待无关（Wait-Free）-锁无关（Lock-Free）与基于锁（Lock-Based）的比较"><span class="nav-number">3.</span> <span class="nav-text">等待无关（Wait-Free）/锁无关（Lock-Free）与基于锁（Lock-Based）的比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一个锁无关的WRRM-Map"><span class="nav-number">4.</span> <span class="nav-text">一个锁无关的WRRM Map</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#垃圾收集，你在何方？"><span class="nav-number">5.</span> <span class="nav-text">垃圾收集，你在何方？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写锁定-Write-Locked-的WRRM-Map"><span class="nav-number">6.</span> <span class="nav-text">写锁定(Write-Locked)的WRRM Map</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结论"><span class="nav-number">7.</span> <span class="nav-text">结论</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Stranger</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"junhan"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === '') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("sdgdAE1vNJXlfXOQhq08DwvC-gzGzoHsz", "eby5Q8EEiwGYQg9BHLxrtsmD");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

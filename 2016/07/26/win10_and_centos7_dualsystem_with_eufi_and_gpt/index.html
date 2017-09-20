@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="linux,windows," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言眼馋双系统有一段时间了，然而之前安装失败格盘的惨痛教训历历在目。这几天闲着没事查阅了好多资料，怂了一个星期，终于决定再来一次尝试。总的来说安装过程还是挺顺利的，但是后期Windows引导的问题折腾了三天。。。技术不好，最终搞出个另类的双系统：默认启动Windows10，同时支持Windows Quick Boot；BIOS下切换到CentOS。  
+设备信息
+PC： Thinkpad E431">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows10+CentOS7双系统(UEFI+GPT)">
+<meta property="og:url" content="http://yoursite.com/2016/07/26/win10_and_centos7_dualsystem_with_eufi_and_gpt/index.html">
+<meta property="og:site_name" content="Junhan's Blog">
+<meta property="og:description" content="前言眼馋双系统有一段时间了，然而之前安装失败格盘的惨痛教训历历在目。这几天闲着没事查阅了好多资料，怂了一个星期，终于决定再来一次尝试。总的来说安装过程还是挺顺利的，但是后期Windows引导的问题折腾了三天。。。技术不好，最终搞出个另类的双系统：默认启动Windows10，同时支持Windows Quick Boot；BIOS下切换到CentOS。  
+设备信息
+PC： Thinkpad E431">
+<meta property="og:image" content="http://i2.piimg.com/567571/33d722ea2e1be7f3.png">
+<meta property="og:image" content="http://i2.piimg.com/567571/9bf538617d6ee03e.png">
+<meta property="og:image" content="http://i1.piimg.com/567571/f7904f40f4b33ecb.png">
+<meta property="og:image" content="http://i4.piimg.com/567571/b4c9a622f50ebe11.png">
+<meta property="og:image" content="http://i2.piimg.com/567571/f236c2bc1a183fc5.png">
+<meta property="og:image" content="http://i4.piimg.com/567571/ae36600142436d51.png">
+<meta property="og:image" content="http://i4.piimg.com/567571/fb61a15fd564471e.png">
+<meta property="og:updated_time" content="2017-07-11T03:10:23.054Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Windows10+CentOS7双系统(UEFI+GPT)">
+<meta name="twitter:description" content="前言眼馋双系统有一段时间了，然而之前安装失败格盘的惨痛教训历历在目。这几天闲着没事查阅了好多资料，怂了一个星期，终于决定再来一次尝试。总的来说安装过程还是挺顺利的，但是后期Windows引导的问题折腾了三天。。。技术不好，最终搞出个另类的双系统：默认启动Windows10，同时支持Windows Quick Boot；BIOS下切换到CentOS。  
+设备信息
+PC： Thinkpad E431">
+<meta name="twitter:image" content="http://i2.piimg.com/567571/33d722ea2e1be7f3.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    tabs: ,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/07/26/win10_and_centos7_dualsystem_with_eufi_and_gpt/"/>
+
+
+
+
+
+  <title>Windows10+CentOS7双系统(UEFI+GPT) | Junhan's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?654b28b71373f0c4e0481699cb1a30e0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Junhan's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">种一棵树最好的时间是十年前，其次是现在。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/07/26/win10_and_centos7_dualsystem_with_eufi_and_gpt/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Stranger">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Junhan's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Windows10+CentOS7双系统(UEFI+GPT)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-26T22:26:42+08:00">
+                2016-07-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统优化/" itemprop="url" rel="index">
+                    <span itemprop="name">系统优化</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/07/26/win10_and_centos7_dualsystem_with_eufi_and_gpt/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/26/win10_and_centos7_dualsystem_with_eufi_and_gpt/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2016/07/26/win10_and_centos7_dualsystem_with_eufi_and_gpt/" class="leancloud_visitors" data-flag-title="Windows10+CentOS7双系统(UEFI+GPT)">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                  <span class="post-meta-divider">|</span>
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  1,893
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  7
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>眼馋双系统有一段时间了，然而之前安装失败格盘的惨痛教训历历在目。这几天闲着没事查阅了好多资料，怂了一个星期，终于决定再来一次尝试。总的来说安装过程还是挺顺利的，但是后期Windows引导的问题折腾了三天。。。<br>技术不好，最终搞出个另类的双系统：默认启动Windows10，同时支持Windows Quick Boot；BIOS下切换到CentOS。  </p>
+<h1 id="设备信息"><a href="#设备信息" class="headerlink" title="设备信息"></a>设备信息</h1><blockquote>
+<p>PC： Thinkpad E431，Microsoft Windows10 Pro 64Bit (10240)<br>CentOS版本：CentOS-7-x86_64-DVD-1511(这个版本的CentOS支持UEFI)<br><a id="more"></a></p>
+</blockquote>
+<h1 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h1><h3 id="1-分配CentOS安装盘符"><a href="#1-分配CentOS安装盘符" class="headerlink" title="1. 分配CentOS安装盘符"></a>1. 分配CentOS安装盘符</h3><p>直接使用Windows的磁盘管理，用磁盘压缩切一个空间出来就好了。我是切了50G出来。</p>
+<h3 id="2-关闭Windows-Quick"><a href="#2-关闭Windows-Quick" class="headerlink" title="2. 关闭Windows Quick"></a>2. 关闭<code>Windows Quick</code></h3><p>执行<code>Win+R</code>输入<code>gpedit.msc</code>，计算机配置-&gt;管理模块-&gt;关机，双击右边，选择<code>已禁用</code>。  <img src="http://i2.piimg.com/567571/33d722ea2e1be7f3.png" alt="关闭快速启动"></p>
+<h3 id="3-关闭Secure-Boot"><a href="#3-关闭Secure-Boot" class="headerlink" title="3. 关闭Secure Boot"></a>3. 关闭<code>Secure Boot</code></h3><p>这个要在BIOS下执行。  </p>
+<h1 id="安装CentOS"><a href="#安装CentOS" class="headerlink" title="安装CentOS"></a>安装CentOS</h1><h3 id="1-UltraISO制作CentOS启动盘。"><a href="#1-UltraISO制作CentOS启动盘。" class="headerlink" title="1. UltraISO制作CentOS启动盘。"></a>1. <code>UltraISO</code>制作CentOS启动盘。</h3><h3 id="2-设置CentOS镜像位置"><a href="#2-设置CentOS镜像位置" class="headerlink" title="2. 设置CentOS镜像位置"></a>2. 设置CentOS镜像位置</h3><p>BISO选择U盘启动，接下来应该会看到黑色界面，如下：<br><img src="http://i2.piimg.com/567571/9bf538617d6ee03e.png" alt="安装CentOS7"><br>将光标移到第一行，然后这里不是直接点<code>Install CentOS7</code>，要按Tab键先配置CentOS镜像位置。<br>按下Tab之后可以看到一下三行英文：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">setparams &quot;Install CentOS 7&quot; Install</div><div class="line">    limuze /image/vmlinuz inst.stage2=hd:LABEL=CentOS\x207\x20x86_64 quiet  </div><div class="line">    initrdefi /image/pxeboot/initrd.img</div></pre></td></tr></table></figure></p>
+<p> 这个是用来选择镜像位置的，因为CentOS它不会自动定位到正确的位置。。。所以接下来要先修改上面的内容。<br>① 把第二句改成：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">limuze /image/vmlinuz initrd=initrd.img linux dd quiet</div></pre></td></tr></table></figure></p>
+<p>② 接下来按<code>Ctrr+x</code>执行，就可以看到所有盘符和编号了。类似于下面这样：<br><img src="http://i1.piimg.com/567571/f7904f40f4b33ecb.png" alt="修改CentOS位置"><br>可以看到，CentOS镜像的位置（也就是我的U盘）是<code>sdb4</code>。记住这个sdb4，然后关掉这个界面重新再来一次。<br>③ 重新来一次又来到了步骤2的那个图，还是按Tab键，这一次将第二行改成如下形式:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">limuze /image/vmlinuz inst.stage2=hd:/dev/sdb4 quiet</div></pre></td></tr></table></figure></p>
+<p>接下来按<code>Ctrr+x</code>执行，CentOS就开始安装了。记得要勾选一个桌面（如gnome桌面）。  </p>
+<h3 id="4-设置CentOS磁盘分区"><a href="#4-设置CentOS磁盘分区" class="headerlink" title="4. 设置CentOS磁盘分区"></a>4. 设置CentOS磁盘分区</h3><p>进来安装界面之后，选择前面切出来的那个盘。<br><img src="http://i4.piimg.com/567571/b4c9a622f50ebe11.png" alt="此处输入图片的描述"><br>CentOS安装过程中要设置磁盘分区，这个就涉及到Linux的磁盘分区。下面是我的设置情况:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">/        ：大小30G，设备类型`LAM`，文件系统`ext4`</div><div class="line">/boot    ：大小200M，设备类型`标准分区`，文件系统`ext4`</div><div class="line">/boot/efi：大小128M，设备类型、文件系统默认值（这个efi分区是放CentOS的uefi文件的，貌似最后也就占10M左右的空间）</div><div class="line">/swap    ：大小8G，设备类型`LAM`，文件系统`ext4`（据说swap分区要为物理内存的两倍，不过觉得我8G内存给它8G已经算多了）</div><div class="line">/home：  ：剩下的空间都给它，设备类型`LAM`，文件系统`ext4`</div></pre></td></tr></table></figure></p>
+<p>之后就开始漫长的安装了。。。。</p>
+<h1 id="修复引导"><a href="#修复引导" class="headerlink" title="修复引导"></a>修复引导</h1><p>CentOS安装完毕时候会重启电脑，这个时候你会看到系统选项有一个<code>Windows10</code>和 <code>CentOS</code>，选择<code>Windows10</code>，“卧槽！我的Win10居然没事，网上那群骗子，害我虚惊一场，重启看看CentOS先”。选择CentOS，然后就看到下面的东东：<br><img src="http://i2.piimg.com/567571/f236c2bc1a183fc5.png" alt="Windows未启动"><br>“特么我这个是Linux啊，你提示Windows未启动是什么意思？”<br>然后就开始了我的折腾之旅。。。。。<br>（这里省略上万字的心酸历程）<br>下面是解决方案</p>
+<h3 id="1-网友建议"><a href="#1-网友建议" class="headerlink" title="1. 网友建议"></a>1. 网友建议</h3><p>网上说的在Windows下使用<code>easybcd</code>添加CentOS的引导，反正我试了很多遍就是没成功。事实上<code>easybcd</code>只能添加CentOS的mbr引导，这个可以在<code>easybcd</code>看出，然而我是通过UEFI来装的，应该就不行。</p>
+<h3 id="2-几番折腾，新办法"><a href="#2-几番折腾，新办法" class="headerlink" title="2. 几番折腾，新办法"></a>2. 几番折腾，新办法</h3><p>① 前面CentOS分区的时候实际上<code>/boot/efi</code>是一个<code>ESP</code>分区（UEFI 系统分区）。里面放的是CentOS的EFI引导文件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">$ ls -R EFI/</div><div class="line">EFI/:</div><div class="line">BOOT/  centos/</div><div class="line"></div><div class="line">EFI/BOOT:</div><div class="line">BOOTX64.EFI*  fallback.efi*</div><div class="line"></div><div class="line">EFI/centos:</div><div class="line">BOOT.CSV  gcdx64.efi*  grub.cfg.bak  grubx64.efi*     shim.efi*</div><div class="line">fonts/    grub.cfg     grubenv       MokManager.efi*  shim-centos.efi*</div><div class="line"></div><div class="line">EFI/centos/fonts:</div><div class="line">unicode.pf2</div></pre></td></tr></table></figure></p>
+<p>其中最重要的文件是<code>grubx64.efi</code>，开机时，BIOS先通过ESP分区找到相应的efi程序，然后加载启动系统，这里的<code>grubx64.efi</code>就是用来加载CentOS的。<br>② 以此类推，Windows下肯定也有类似的文件。的确，在装Windows10的时候，会自动分配一个隐藏的ESP分区，盘符别名为<code>SYSTEM_DRV</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">BOOT/</div><div class="line">EFI/</div></pre></td></tr></table></figure></p>
+<p>其中<code>EFI/Microsoft/Boot</code>目录里面放的就是加载Windows系统的efi文件。即<code>EFI/Microsoft/Boot/bootmgr.efi</code>。<br>由上可知，整个硬盘共有两个ESP分区，常理上讲好像有点不科学，具体我也不知道可不可以。我觉得可能是不可以的，测试了下，发现BIOS每次都是从<code>SYSTEM_DRV</code>里面搜索efi程序，而CentOS的efi又不在<code>SYSTEM_DRV</code>目录下，这应该就是CentOS无法启动的原因。<br>③ 所以接下来我就把CentOS的ESP分区里面的<code>EFI/centos</code>整个文件夹都拷贝到<code>SYSTEM_DRV</code>盘下的<code>/EFI</code>目录下。重启电脑发现还是不行，原因很简单<br><strong>a</strong>.如果想要出现两个系统的选择项，那就要使用Win10引导CentOS或者有个程序来专门引导两个系统，前者我查了很多资料还是没弄出来，好像是要修改Windows的<code>BCD</code>文件，有点麻烦。至于后者，有个叫<code>rEFind</code>的程序（<a href="https://sourceforge.net/projects/refind/" target="_blank" rel="external">rEFind下载</a>）可以达到目的，不过弄出来界面太丑了，我放弃了。<br><strong>b</strong>.如果想要使用BIOS引导，就要把<code>EFI/centos</code>里面的路径写到一些特殊的文件，这个要用到一个叫<code>BOOTICE</code>的工具<a href="http://www.ipauly.com/wp-content/uploads/2015/11/BOOTICEx64_v1.332.rar" target="_blank" rel="external">BOOTICE下载</a>。  </p>
+<h3 id="3-BOOTICE使用教程"><a href="#3-BOOTICE使用教程" class="headerlink" title="3. BOOTICE使用教程"></a>3. <code>BOOTICE</code>使用教程</h3><p>① 打开BOOTICE，选择UEFI，点<code>修改启动序列</code><br><img src="http://i4.piimg.com/567571/ae36600142436d51.png" alt="BOOTICE"><br><img src="http://i4.piimg.com/567571/fb61a15fd564471e.png" alt="修改启动序列"><br>② 选择左边的添加，先随便选一个本地磁盘的efi文件，然后把左边的<code>启动文件</code>改为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">\EFI\centos\grubx64.efi</div></pre></td></tr></table></figure></p>
+<p><code>启动分区</code>选择和Windows系统一样的项。<br>最后把它移动到第二个，保存。<br>③ 使用PE把<code>\EFI\centos</code>从CentOS的ESP目录移动到Windows的ESP目录下。这一步是为了让上面设置<code>启动文件:\EFI\centos\grubx64.efi</code>生效。<br>不得不说，PE真是个好工具。</p>
+<h1 id="成功"><a href="#成功" class="headerlink" title="成功"></a>成功</h1><p>通过上述步骤之后，重启电脑，电脑应该还是自动进入Win10，因为<code>BOOTICE</code>工具是把CentOS添加到BIOS的启动序列中= =<br>重启，进入BIOS（Thinkpad是F12），可以看到BIOS启动列表有<code>Windows10</code>、<code>CentOS</code>、<code>USB HDD</code>等等，这个<code>USB HDD</code>就是U盘，点<code>CentOS</code>，就可以进入CentOS的引导了，然后启动CentOS。到这里就成功了。</p>
+<h1 id="心得"><a href="#心得" class="headerlink" title="心得"></a>心得</h1><p>装这个双系统，修复引导花了我好长时间，不过也学到了很多东西，比如UEFI和传统Legacy的区别、UEFI的工作原理、PE的作用等等，最终文件没有发生丢失，也算是值了。下面是总结。</p>
+<ol>
+<li><strong>UEFI+GPT装双系统真麻烦</strong></li>
+<li><strong>微软垄断心态真可怕</strong></li>
+<li><strong>Google搜索东西靠谱多了</strong></li>
+<li>PE真是个好工具（进入磁盘修改EFI文件）  </li>
+<li>我装的双系统怎么和大家的不一样= =<br>(又要继续干活了。。。)</li>
+</ol>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><h4 id="CentOS7安装教程"><a href="#CentOS7安装教程" class="headerlink" title="CentOS7安装教程"></a>CentOS7安装教程</h4><ol>
+<li><a href="http://www.augsky.com/599.html" target="_blank" rel="external">U盘安装CentOS7的最终解决方案</a><h4 id="UEFI引导修复"><a href="#UEFI引导修复" class="headerlink" title="UEFI引导修复"></a>UEFI引导修复</h4></li>
+<li><a href="http://blog.csdn.net/smstong/article/details/9408451" target="_blank" rel="external">UEFI主板GPT方式安装CentOS6.4</a></li>
+<li><a href="http://blog.csdn.net/smstong/article/details/9422809" target="_blank" rel="external">UEFI+GPT安装Windows8和CentOS双系统</a></li>
+<li><a href="http://m.blog.csdn.net/article/details?id=51207807" target="_blank" rel="external">Windows10与CentOS的完美结合</a></li>
+<li><a href="http://blog.sina.com.cn/s/blog_53918a450102uzi6.html" target="_blank" rel="external">UEFI的两种启动模式</a></li>
+<li><a href="http://blog.csdn.net/icycolawater/article/details/51242999" target="_blank" rel="external">支持 efi 的主板 双系统安装 ubuntu - 学习 EFI 和 gpt</a></li>
+<li><a href="https://www.zhihu.com/question/22502670" target="_blank" rel="external">如何在UEFI模式下Win8与Ubuntu多系统的安装？</a></li>
+<li><a href="http://tshare365.com/archives/1774.html" target="_blank" rel="external">如何在UEFI+GPT下使用rEFind实现Win10 + Kali2.0 双引导！</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+            <a href="/tags/windows/" rel="tag"># windows</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/14/linux_files_and_directories/" rel="next" title="Linux文件与目录管理">
+                <i class="fa fa-chevron-left"></i> Linux文件与目录管理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/30/the_toss/" rel="prev" title="闲着没事乱折腾">
+                闲着没事乱折腾 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/07/26/win10_and_centos7_dualsystem_with_eufi_and_gpt/"
+           data-title="Windows10+CentOS7双系统(UEFI+GPT)" data-url="http://yoursite.com/2016/07/26/win10_and_centos7_dualsystem_with_eufi_and_gpt/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="Stranger" />
+          <p class="site-author-name" itemprop="name">Stranger</p>
+           
+              <p class="site-description motion-element" itemprop="description">今天天气真好</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/scjhan" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/2633996855" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友链
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000" title="廖雪峰Git教程" target="_blank">廖雪峰Git教程</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/solstice/" title="陈硕巨巨" target="_blank">陈硕巨巨</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.aonosora.com" title="膜光哥" target="_blank">膜光哥</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.allitebooks.com/" title="Allitebooks" target="_blank">Allitebooks</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://unsplash.com/" title="Unsplash" target="_blank">Unsplash</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://classfoo.com/" title="Classfoo" target="_blank">Classfoo</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#设备信息"><span class="nav-number">2.</span> <span class="nav-text">设备信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#前期准备"><span class="nav-number">3.</span> <span class="nav-text">前期准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-分配CentOS安装盘符"><span class="nav-number">3.0.1.</span> <span class="nav-text">1. 分配CentOS安装盘符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-关闭Windows-Quick"><span class="nav-number">3.0.2.</span> <span class="nav-text">2. 关闭Windows Quick</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-关闭Secure-Boot"><span class="nav-number">3.0.3.</span> <span class="nav-text">3. 关闭Secure Boot</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装CentOS"><span class="nav-number">4.</span> <span class="nav-text">安装CentOS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-UltraISO制作CentOS启动盘。"><span class="nav-number">4.0.1.</span> <span class="nav-text">1. UltraISO制作CentOS启动盘。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-设置CentOS镜像位置"><span class="nav-number">4.0.2.</span> <span class="nav-text">2. 设置CentOS镜像位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-设置CentOS磁盘分区"><span class="nav-number">4.0.3.</span> <span class="nav-text">4. 设置CentOS磁盘分区</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#修复引导"><span class="nav-number">5.</span> <span class="nav-text">修复引导</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-网友建议"><span class="nav-number">5.0.1.</span> <span class="nav-text">1. 网友建议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-几番折腾，新办法"><span class="nav-number">5.0.2.</span> <span class="nav-text">2. 几番折腾，新办法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-BOOTICE使用教程"><span class="nav-number">5.0.3.</span> <span class="nav-text">3. BOOTICE使用教程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#成功"><span class="nav-number">6.</span> <span class="nav-text">成功</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#心得"><span class="nav-number">7.</span> <span class="nav-text">心得</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">8.</span> <span class="nav-text">参考资料</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CentOS7安装教程"><span class="nav-number">8.0.0.1.</span> <span class="nav-text">CentOS7安装教程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#UEFI引导修复"><span class="nav-number">8.0.0.2.</span> <span class="nav-text">UEFI引导修复</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Stranger</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"junhan"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === '') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("sdgdAE1vNJXlfXOQhq08DwvC-gzGzoHsz", "eby5Q8EEiwGYQg9BHLxrtsmD");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
